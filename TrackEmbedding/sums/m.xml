@@ -28,7 +28,7 @@
         set events_list=events.list
         mkdir events
         echo OOO OOO OOO OOO OOO OOO OOO OOO a3
-        touch events/${events_list}
+        touch ${events_list}
 
         echo OOO OOO OOO OOO OOO OOO OOO OOO a4
         set i = 0
@@ -51,10 +51,14 @@
         ls events
         <!-- For debugging: -->
         <!-- echo "file list location: &dir;" -->
-        <!-- cat ${events_list} -->
+        echo "-.-.-.-.-.-.-.cat ${events_list}-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-"
+        cat ${events_list}
+        echo "-.-.-.-.-.-.-.end cat ${events_list}-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-"
         echo end ls locally OOO OOO OOO OOO OOO OOO OOO a7
         root4star -q -b trackEmbedding.C\(-1,\"${events_list}\",\"&outname;\"\)
         echo OOO OOO OOO OOO OOO OOO OOO OOO a9
+        echo ls OOO OOO OOO OOO OOO OOO OOO  a10
+        ls
 	</command>
     <stdout URL="file:./sums/out/$JOBID" />	
     <stderr URL="file:./sums/err/$JOBID" />
