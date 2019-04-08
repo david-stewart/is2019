@@ -1,2 +1,10 @@
 **/.sl73_gcc485/
 **/_*
+TrackEmbedding/track_emb
+output
+input
+out
+err
+**/schedTemplateExp.xml
+**/.consign
+
