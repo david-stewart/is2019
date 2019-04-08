@@ -274,7 +274,7 @@ Int_t RunQA::Make() {
     prof->Fill(5., d_delta_vzVpd);
     prof->Fill(6., picoEvent->numberOfGlobalTracks());
     prof->Fill(7., nch);
-    prof->Fill(8., sumpt/nch);
+    if (nch > 0) prof->Fill(8., sumpt/nch);
     prof->Fill(9., nETgt4);
     if (nETgt4 > 0) prof->Fill(10., sumETgt4/nETgt4);
 

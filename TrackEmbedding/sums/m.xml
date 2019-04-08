@@ -6,15 +6,11 @@
              and write a file called "events.list" which will list all of the "*.MuDst.root"
              events
         -->
-        echo OOO OOO OOO OOO OOO OOO OOO OOO b0
         set log = "&outname;.log"
-        echo OOO OOO OOO OOO OOO OOO OOO OOO b1
         echo logname ${log}
-        echo OOO OOO OOO OOO OOO OOO OOO OOO b2
         <!-- if ( -f ${log} ) -->
             <!-- rm ${log} -->
         <!-- endif -->
-        echo OOO OOO OOO OOO OOO OOO OOO OOO a1
         echo "Building input list from location:" > ${log}
         echo "Input files from:" >> ${log}
         echo &dir; >> ${log}
@@ -23,14 +19,9 @@
         echo "List of *MuDst.root copied files" >> ${log}
         echo "(note that there are also *.minimc.root copied files)" >> ${log}
         echo "-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-" >> ${log}
-        echo OOO OOO OOO OOO OOO OOO OOO OOO a2
-
         set events_list=events.list
         mkdir events
-        echo OOO OOO OOO OOO OOO OOO OOO OOO a3
         touch ${events_list}
-
-        echo OOO OOO OOO OOO OOO OOO OOO OOO a4
         set i = 0
         foreach file ( `find &dir; -name "*.MuDst.root"` )
             set i = `expr ${i} + 1`
@@ -41,24 +32,19 @@
             cp ${tree}/${base}.minimc.root ./events/${base}_${i}.minimc.root
             echo ./events/${base}_${i}.MuDst.root >> ${events_list}
         end
-        echo OOO OOO OOO OOO OOO OOO OOO OOO a5
         echo "-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-" >> ${log}
         echo " end of copied files " >> ${log}
         echo " starting extractor TrackEmbedding.C program" >> ${log}
 
-        echo OOO OOO OOO OOO OOO OOO OOO OOO a6
-		echo OOO ls locally
+        echo "-.-.-.-.-.-.-.ls events-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-"
         ls events
-        <!-- For debugging: -->
-        <!-- echo "file list location: &dir;" -->
         echo "-.-.-.-.-.-.-.cat ${events_list}-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-"
         cat ${events_list}
         echo "-.-.-.-.-.-.-.end cat ${events_list}-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-"
-        echo end ls locally OOO OOO OOO OOO OOO OOO OOO a7
         root4star -q -b trackEmbedding.C\(-1,\"${events_list}\",\"&outname;\"\)
-        echo OOO OOO OOO OOO OOO OOO OOO OOO a9
-        echo ls OOO OOO OOO OOO OOO OOO OOO  a10
+        echo "-.-.-.-.-.-.-.ls after running script-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-"
         ls
+        echo "-.-.-.-.-.-.-.done-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-"
 	</command>
     <stdout URL="file:./sums/out/$JOBID" />	
     <stderr URL="file:./sums/err/$JOBID" />
@@ -66,7 +52,7 @@
     <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/pwg/dstewart/outroot/is2019/TrackEmbedding/"/>
 
 	<SandBox installer="ZIP">
-        <Package> 
+        <Package name="&outname;" > 
             <File>file:./trackEmbedding.C</File>
 			<File>file:./StRoot</File>
             <File>file:./.sl73_gcc485</File>
