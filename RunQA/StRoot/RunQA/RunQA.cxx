@@ -255,7 +255,7 @@ Int_t RunQA::Make() {
     for (int i = 1; i < 16; ++i) bbcE += picoEvent->bbcAdcEast(i);
 
     int bbcW{0};
-    for (int i = 1; i < 16; ++i) bbcW += picoEvent->bbcAdcEast(i);
+    for (int i = 1; i < 16; ++i) bbcW += picoEvent->bbcAdcWest(i);
 
     double d_vz{ picoEvent->primaryVertex().z() };
     double d_vzVpd { picoEvent->vzVpd() };
