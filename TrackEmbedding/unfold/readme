@@ -1,0 +1,10 @@
+To run this:
+
+Do: 
+root -q -b -l test.C
+
+
+Todo:
+Make sure that the all the same groups are present in the names (I think that this is already true).
+
+Unfold the tracking efficiency for the three types.

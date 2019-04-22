@@ -1,6 +1,8 @@
 **/.sl73_gcc485/
 **/_*
 TrackEmbedding/track_emb
+TrackEmbedding/unfold/bin
+TrackEmbedding/unfold/prior
 output
 input
 out

@@ -1,0 +1,5 @@
+|1| [ ] compile all the RunQA results into:
+    1. [ ] a list of runIds present
+    2. [ ] TH1D of the results for each of the criteria
+|2| [ ] make the bad run list
+|3| [ ] run the EA_events script with the bad_run list
