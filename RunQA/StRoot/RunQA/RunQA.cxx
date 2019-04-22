@@ -154,7 +154,7 @@ Int_t RunQA::Make() {
         log << " hard_cuts: " << Form("hard_cuts_%i",runId) << endl;
         h_means[runId] = new TH1D(
         Form("hard_cuts_%i",runId),Form(
-        "Run %i totals;0:rnk<0 1:rnk>0 2:pT>30 3:500001 4:!500001;Totals per event",runId),
+        "Run %i totals;0:rnk<0 1:rnk>0 2:pT>30 3:500206 4:!500206;Totals per event",runId),
         5,-0.5,4.5);
     }
     TH1D*  hg = h_means[runId];
@@ -170,7 +170,7 @@ Int_t RunQA::Make() {
         hg->Fill(1);
     }
 
-    if (picoEvent->isTrigger(500001)) {
+    if (picoEvent->isTrigger(500206)) {
         hg->Fill(3);
     } else {
         /* log << " Not 500001: but Is: "; */
@@ -242,7 +242,7 @@ Int_t RunQA::Make() {
             double calib { bemc->calib(detector,     i_tower) };
             double Et { (bTowHit->adc() - ped)*calib/TMath::CosH(eta)} ;
             /* cout << "ped(" << i_tower <<") " << ped << " eta: " << eta << "  calib: " << calib << " Et: " << Et << endl; */
-            if (Et > 4) {
+            if (Et > 4.) {
                 ++nETgt4;
                 sumETgt4 += Et;
             }
