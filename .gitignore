@@ -9,4 +9,11 @@ out
 err
 **/schedTemplateExp.xml
 **/.consign
+# mac 
+**/*.pdf
+*.so
+*.pcm
+*.d
+*.xlsx
+*.xlsm
 
