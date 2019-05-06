@@ -99,7 +99,6 @@ RunQA::RunQA(
     vzVpd    = new TH1D("vzVpd","vzVpd, all events;vzVpd;N_{events}",240,-30,30);
     delta_vz_vzVpd  = new TH1D("delta_vz_vzVpd","vz - vzVpd, all events;vzVpd;N_{events}",480,-60,60);
     vz_vzVpd = new TH2D("vz_vzVpd","All events;vz;vzVpd",240,-30,30,240,-30,30);
-    et_gt4  = new TProfile("et_gt4","All events, tower E_{T}>4 GeV;tower Id;E_{T} (for values > 4GeV)",4800,0.5, 4800.5);
 };
 
 //----------------------------------------------------------------------------- 
@@ -140,9 +139,6 @@ Int_t RunQA::Make() {
     int runId{ picoEvent->runId() } ;
 
     /* log << " RunID " << runId << endl; */
-    // add code to get the Vz of the events as well...
-    // 2 bins per centimeter, go -30 to 30 (so 120 bins)
-    // in the actual analysis I did -10 to 10k with 40 bins
     fout_root->cd();
     if (!p_means.count(runId)) {
         log << " p_means " << Form("means_%i",runId) << endl;
@@ -152,15 +148,11 @@ Int_t RunQA::Make() {
         runId),
         11,-0.5,10.5);
 
-        bbcVz[runId] = new TProfile(Form("bbcVz_%i",runId),
-                Form("Run %i, bbcES(Vz);bbcES;Vz",runId),120,-30.,30.);
-
         et_vals[runId] = new TH2D (
                 Form("et_%i",runId), Form(
                 "Run %i Tower Et Values;tower Id;Et",runId),
                 4800, 0.5, 4800.5,
                 42,4.,25.);
-        /* p_vals = new TH2D( Form("vals_ */
     }
     TProfile *prof = p_means[runId];
     TH2D     *et_vals_hg2 = et_vals[runId];
@@ -185,7 +177,7 @@ Int_t RunQA::Make() {
         hg->Fill(1);
     }
 
-    if (picoEvent->isTrigger(500001)) {
+    if (picoEvent->isTrigger(500206)) {
         hg->Fill(3);
     } else {
         /* log << " Not 500001: but Is: "; */
@@ -198,21 +190,24 @@ Int_t RunQA::Make() {
     }
 
     //loop through each of the tracks to see if there is a greater than 15 GeV track present
+    StPicoEvent* mevent = picoDst->event();
     bool has_gt30 { false };
     int nch{0};
     double sumpt;
     for (unsigned int i = 0; i < picoDst->numberOfTracks(); ++i){
         StPicoTrack* track = static_cast<StPicoTrack*>(picoDst->track(i));
         if (!track->isPrimary()) continue;
-        TVector3 Ptrack { track->pMom() };
-        double dca { (track->origin() - picoEvent->primaryVertex()).Mag() };
+        /* TVector3 Ptrack { track->pMom() }; */
+        StThreeVectorF Ptrack = track->pMom();
+        /* double dca { (track->origin() - picoEvent->primaryVertex()).Mag() }; */
+        float dca = (track->dcaPoint() - mevent->primaryVertex()).mag();
         if (dca > 3.0) continue;
-        if (TMath::Abs(Ptrack.Eta())  >= 1.0) continue;
+        if (TMath::Abs(Ptrack.pseudoRapidity())  >= 1.0) continue;
         float nhit_ratio = ((float)track->nHitsFit()) / (float)track->nHitsMax();
         if (nhit_ratio <= 0.52) continue;
         if (track->bTofPidTraitsIndex() != -1) continue;
 
-        double pt {Ptrack.Perp() };
+        double pt {Ptrack.perp() };
         if (pt > 30.) {
             has_gt30 = true;
             break;
@@ -247,19 +242,22 @@ Int_t RunQA::Make() {
                 log << " NO BTOWHIT " << endl;
                 continue;
             }
-            float xT, yT, zT;
-            bemcGeom->getXYZ(i_tower, xT, yT, zT);
-            TVector3 towLoc {xT, yT, zT};
-            TVector3 relPos { towLoc - picoEvent->primaryVertex() };
+            StEmcPosition *mPosition = new StEmcPosition();
+            StThreeVectorF towLoc = mPosition->getPosFromVertex( 
+                    mevent->primaryVertex(), i_tower);
+            /* float xT, yT, zT; */
+            /* bemcGeom->getXYZ(i_tower, xT, yT, zT); */
+            /* TVector3 towLoc {xT, yT, zT}; */
+            /* TVector3 relPos { towLoc - picoEvent->primaryVertex() }; */
 
             double ped  { bemc->pedestal(detector, i_tower) };
-            double eta  { relPos.PseudoRapidity() };
+            /* double eta  { relPos.PseudoRapidity() }; */
+            double eta  { towLoc.pseudoRapidity() };
             double calib { bemc->calib(detector,     i_tower) };
             double Et { (bTowHit->adc() - ped)*calib/TMath::CosH(eta)} ;
             /* cout << "ped(" << i_tower <<") " << ped << " eta: " << eta << "  calib: " << calib << " Et: " << Et << endl; */
             if (Et > 4.) {
                 et_vals_hg2->Fill(i_tower,Et);
-                et_gt4->Fill(i_tower,Et);
                 ++nETgt4;
                 sumETgt4 += Et;
             }
@@ -291,12 +289,9 @@ Int_t RunQA::Make() {
     prof->Fill(5., d_delta_vzVpd);
     prof->Fill(6., picoEvent->numberOfGlobalTracks());
     prof->Fill(7., nch);
-
     if (nch > 0) prof->Fill(8., sumpt/nch);
     prof->Fill(9., nETgt4);
     if (nETgt4 > 0) prof->Fill(10., sumETgt4/nETgt4);
-
-    bbcVz[runId]->Fill(d_vz, bbcE);
 
     return kStOk;
 };

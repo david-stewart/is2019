@@ -1,0 +1,267 @@
+We are starting on node: rcas2029.rcf.bnl.gov
+HOME is not defined
+Using getent method
+HOME is now /star/u/djs232
+133313 We will spawn ourselves (/star/u/djs232/is2019/TrackEmbedding/makeMatrices/sums_input/sched55DA50F0E22C8349EA4A8FE1D61E15C5_0.csh )
+133313 We BEGIN on [Thu May  2 21:21:46 EDT 2019]
+[1] 133496
+133313 We are waiting for 133496 
+133313 Grandchild PID is 134090 - found in 10 x 1 seconds
+133313 Establishing first watcher   on    Thu May  2 21:21:56 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 134090 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 134090 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 137740 - found in 40 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:22:58 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 137740 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 137740 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 141010 - found in 70 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:24:00 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 141010 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 141010 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 144167 - found in 100 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:25:02 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 144167 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 144167 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 147878 - found in 130 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:26:03 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 147878 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 147878 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 151084 - found in 160 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:27:05 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 151084 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 151084 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 154093 - found in 190 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:28:07 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 154093 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 154093 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 158252 - found in 220 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:29:08 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 158252 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 158252 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 163492 - found in 250 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:30:10 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 163492 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 163492 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 171172 - found in 280 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:31:12 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 171172 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 171172 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 176182 - found in 310 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:32:14 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 176182 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 176182 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 178526 - found in 330 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:32:55 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 178526 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 178526 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 181137 - found in 360 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:33:56 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 181137 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 181137 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 182906 - found in 390 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:34:58 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 182906 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 182906 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 186164 - found in 420 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:35:59 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 186164 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 186164 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 188628 - found in 450 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:37:01 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 188628 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 188628 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 191099 - found in 480 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:38:03 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 191099 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 191099 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 193874 - found in 510 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:39:04 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 193874 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 193874 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 196351 - found in 540 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:40:06 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 196351 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 196351 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 198324 - found in 570 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:41:08 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 198324 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 198324 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 201580 - found in 600 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:42:09 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 201580 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 201580 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 208638 - found in 630 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:43:11 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 208638 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 208638 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 215352 - found in 660 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:44:13 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 215352 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 215352 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 219767 - found in 690 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:45:15 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 219767 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 219767 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 222914 - found in 710 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:45:56 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 222914 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 222914 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 226241 - found in 740 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:46:59 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 226241 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 226241 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 231185 - found in 770 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:48:02 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 231185 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 231185 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 233731 - found in 800 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:49:04 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 233731 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 233731 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 236527 - found in 830 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:50:06 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 236527 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 236527 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133313 Grandchild PID is 239276 - found in 860 x 2 seconds
+133313 Grandchild to watch has changed on Thu May  2 21:51:08 EDT 2019
+133313 Process tree is 133313 (main) -> 133496 (child) -> 239276 (grandchild)
+F S   UID    PID   PPID  C PRI  NI ADDR SZ WCHAN  TTY        TIME CMD
+0 S 11690 239276 133496  0  80   0 - 26974 hrtime ?          0:00 sleep 60
+133496 Stepping into the main SUMS wrapper program with []
+.... building sandbox
+--------------------------------
+STAR Unified Meta Scheduler 1.10.31 we are starting in $SCRATCH : /home/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0
+--------------------------------
+total 12
+lrwxrwxrwx 1 djs232 rhstar 62 May  2 21:21 driver.csh -> /star/u/djs232/is2019/TrackEmbedding/makeMatrices/./driver.csh
+lrwxrwxrwx 1 djs232 rhstar 60 May  2 21:21 e_tree.C -> /star/u/djs232/is2019/TrackEmbedding/makeMatrices/./e_tree.C
+lrwxrwxrwx 1 djs232 rhstar 60 May  2 21:21 e_tree.h -> /star/u/djs232/is2019/TrackEmbedding/makeMatrices/./e_tree.h
+Cleaning up sandbox file:  /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/driver.csh
+Cleaning up sandbox file:  /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/e_tree.C
+Cleaning up sandbox file:  /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/e_tree.h
+Cleaning up sandbox file:  /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/.sandboxFiles
+Starting copy block
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:22:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:23:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:24:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:25:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:26:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:27:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:28:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:29:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:30:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:31:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:32:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:33:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:34:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:35:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:36:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+Starting copy block
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:37:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:38:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:39:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:40:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:41:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:42:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:43:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:44:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:45:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:46:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:47:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:48:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:49:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:50:54 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+The copy failed, waiting to try again.
+Trying copy again at Thu May 2 21:51:55 EDT 2019
+Running copy command:  /bin/cp -fp /tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root /direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices
+133313 Execution of (/star/u/djs232/is2019/TrackEmbedding/makeMatrices/sums_input/sched55DA50F0E22C8349EA4A8FE1D61E15C5_0.csh ) has ended, exiting normally
+133313 We END on [Thu May  2 21:51:55 EDT 2019]
