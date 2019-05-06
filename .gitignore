@@ -17,3 +17,10 @@ sched*.list
 sched*.report
 .nfs*
 kate
+# mac 
+**/*.pdf
+*.so
+*.pcm
+*.d
+*.xlsx
+*.xlsm

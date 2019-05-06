@@ -1,2 +1,16 @@
 **/sums/*
 linted_picos.list
+.consign
+*.d
+sched*.condor
+sched*.csh
+sched*.list
+sched*.report
+.nfs*
+kate
+**/*.pdf
+*.so
+*.pcm
+*.d
+*.xlsx
+*.xlsm
