@@ -1,0 +1,37 @@
+[1]  + Exit 1                        ( ( setenv SUMS_EXECUTION 1 && nohup $0 $* ) > $SCRATCH/.output.log ) >& $SCRATCH/.errror.log
+root: can't figure out DISPLAY, set it manually
+In case you run a remote ssh session, restart your ssh session with:
+=========>  ssh -Y
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/p.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+/bin/cp: cannot stat ‘/tmp/djs232/55DA50F0E22C8349EA4A8FE1D61E15C5_0/pbar.root’: No such file or directory
+end: Not in while/foreach.

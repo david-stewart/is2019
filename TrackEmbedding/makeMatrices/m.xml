@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<job maxFilesPerProcess="1" fileListSyntax="xrootd" copyInputLocally="false" simulateSubmission="false" >
+    <!-- Script to hadd together the .root files from the results -->
+	<command>
+        <!-- (a) -->
+        cp /gpfs/mnt/gpfs01/star/pwg/dstewart/outroot/is2019/TrackEmbedding/*.root .
+        chmod u+x driver.csh
+        ./driver.csh
+	</command>
+    <stdout URL="file:./xml_out" />	
+    <stderr URL="file:./xml_err" />
+    <output fromScratch="p.root"  toURL="file:/direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices"/>
+    <output fromScratch="pbar.root"  toURL="file:/direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices"/>
+    <output fromScratch="K.root"  toURL="file:/direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices"/>
+    <output fromScratch="Kn.root"  toURL="file:/direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices"/>
+    <output fromScratch="pi.root"  toURL="file:/direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices"/>
+    <output fromScratch="pin.root"  toURL="file:/direct/star+u/djs232/is2019/TrackEmbedding/makeMatrices/matrices"/>
+
+	<SandBox>
+        <Package> 
+            <File>file:./e_tree.h</File>
+			<File>file:./e_tree.C</File>
+            <File>file:./driver.csh</File>
+		</Package>		
+	</SandBox>
+	
+
+	<Generator>
+        <Location>      ./sums_input</Location>
+        <ScriptLocation>./sums_input</ScriptLocation>
+        <ListLocation>  ./sums_input</ListLocation>
+	</Generator>
+</job>

@@ -4,7 +4,7 @@
 #include "TTree.h"
 #include "St_db_Maker/St_db_Maker.h"
 #include "StEmcUtil/database/StBemcTables.h"
-#include "StRoot/StPicoEvent/StPicoDst.h"
+#include "StRoot/StPicoDstMaker/StPicoDst.h"
 #include "StRoot/StPicoEvent/StPicoTrack.h"
 #include "StRoot/StPicoEvent/StPicoEvent.h"
 #include "StRoot/StPicoDstMaker/StPicoDstMaker.h"
@@ -58,7 +58,6 @@ class RunQA : public StMaker {
     map<string, int> m_file_names;
     long long int fEventsProcessed;
     map<int, TProfile*> p_means;
-    map<int, TProfile*> bbcVz;
     map<int, TH2D*>     et_vals;
     map<int, TH1D*>     h_means; 
 
@@ -66,7 +65,6 @@ class RunQA : public StMaker {
     TH1D* vzVpd;
     TH1D* delta_vz_vzVpd;
     TH2D* vz_vzVpd;
-    TProfile* et_gt4;
 
     public:
     RunQA(

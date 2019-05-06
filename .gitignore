@@ -9,6 +9,14 @@ out
 err
 **/schedTemplateExp.xml
 **/.consign
+.consign
+*.d
+sched*.condor
+sched*.csh
+sched*.list
+sched*.report
+.nfs*
+kate
 # mac 
 **/*.pdf
 *.so
