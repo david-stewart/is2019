@@ -1,0 +1,8 @@
+use as input:
+../prod_rat/analyze/weight_TM/TM_weighted.root to get the unfolding matrix
+
+directories here:
+./data/
+    contains files from RunData
+
+./make_hg2_RunData

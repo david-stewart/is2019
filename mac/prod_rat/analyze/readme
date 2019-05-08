@@ -1,0 +1,61 @@
+Steps to run here (/Users/djs232/is2019/mac/prod_rat/analyze):
+
+1. Make folder emb_data with the response matrices from RCAS.
+   Note that the matrices don't need (anymore) the TH1D* M matrices, because
+   the prior in *T needs to be weighted. *M is later projected.
+
+   As it stands, there is a lot of extra information in these files
+   than is needed.
+
+   Matices are for pi,K,p + antiparticles:
+   emb_data:
+
+   >> ls -1 emb_data:
+        /K.root
+        /Kn.root
+        /TM.root
+        /p.root
+        /pbar.root
+        /pi.root
+        /pin.root
+
+*. (independent step)
+    Make track resolutions.
+    ./tr_resolution
+    note: prefer MT to TM matrices (MT are what are used to unfold) 
+    >> ls tr_resultion
+
+2. Make the data in ../data/
+
+    phenix_pikp_data/
+       to_tuples.cc 
+       pip_STAR.root
+
+    star_pip_data/
+        phenix_to_tuples.cc
+        piKp_phenix.root
+
+*. (independent of the rest)
+   Make plots with StarPhenix_piKp_comp
+   >> ./StarPhenix_piKp_comp.sh
+   >> ./plot_comp.cc 
+
+3. Make ./fn_weight/fn_weight.root with:
+    >> fn_weight.sh
+      -> uses fn_weight.cc
+      -> make fn_weight.root
+    
+
+3. Make the weighted matrices under ./weight_TM
+
+    (a) weight_TM.sh
+    -> driver for weight_TM.cc
+        -> uses ../cc/inc_Tsallis.cc
+
+    * can also use plot_weight_TM.cc
+    To make a 3x2 matrix Measured x Truth matrices
+
+4. -- to do -- the actual unfolding
+
+    ./unfold
+

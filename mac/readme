@@ -1,0 +1,8 @@
+This folder contains analyses conducted on my macbook pro (my personal computer)
+
+prod_rad: (for "production ratio")
+    contains particle ratios and efficiencies, along with weighted unfolding matrices (taken from
+    output from ../TrackEmbedding)
+
+HQ2018_Plots
+    Contains plots like those for QM2018 -- track deciles for <nch> etc...
