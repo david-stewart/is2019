@@ -1,3 +1,43 @@
+Directory listing:
+
+
+RunData/
+   Make simple trees for analysis, using input from RunQA/
+
+RunQA/
+    Get run averaged values to make a bad_runs_list. 
+    Also make TProfile's for each of the bbc(vz) for use in RunData/
+
+RunQA_SL18b/  ->unfinished
+    Same as above but for SL18b/ in theoryk
+
+RunTree_206/    -> unfinished
+
+TrackEmbedding/ -> old code. Needs to be refactored. Still used to get the embedding histograms.
+    ./makeMatrices :: newer code, reads the tracked matched code in
+    ./makeMatrices/input :: old input files for matching piKp+/-
+
+TreeRoots/
+    Current code. Makes trees of bbc[ES/EL/E/WS/WL/W] vz vzVpd ZDCx etc...
+    Use to make EA definitions. (Probably replaces EA_metrics from above).
+    
+TreeRoots_SL18b/
+    Same as TreeRoots/ but for st_physics (for 500206 and 500004 triggers)
+
+mac/
+    files meant only to be run on my local computer. Some use Root6 functionaliy.
+    
+arch/
+    old stuff. Probably can delete
+    EA_metrics/ -> archive?
+       ? 
+
+scripts/
+    check.py :: many local copies of this exist. I probably won't use this again.
+
+
+
+
 |1| [ ] compile all the RunQA results into:
     1. [ ] a list of runIds present
     2. [ ] TH1D of the results for each of the criteria

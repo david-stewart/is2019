@@ -1,0 +1,12 @@
+Note that below, each failure mode is checked sequentially
+and therefore if a file fails more than one test, it is only recorded with
+the first failure
+
+Total number of good files: 2086
+Total with no out file:     0
+Total with no err file:     0
+Total with no_weEND:        0
+Total with bad_alloc:       0
+
+
+ To hadd the results together, go to sub_results and run `star-submit hadd.xml`

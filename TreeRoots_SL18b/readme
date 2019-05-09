@@ -1,0 +1,19 @@
+This is meant to produce the relatively large trees for correlation in:
+
+ - Nch
+ - Ntow_gtp2 // greater than 0.2 GeV
+ - Ntow_gt4  // greater than 4 GeV
+ - bbc -
+    ES
+    EL
+    Esum
+    WS
+    WL
+    Wsum
+ - vz
+ - vzVpd
+ - ZDCx
+ - Ezdc
+ - Wzdc
+
+For 500001 (MB) (SL18h), 500206 (HT1)(SL18b), 500004 (SL18b)(no vertex)

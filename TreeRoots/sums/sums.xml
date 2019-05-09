@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<job maxFilesPerProcess="100" fileListSyntax="xrootd" simulateSubmission="false" >
+	<command>
+        <!-- echo "*****************" -->
+        <!-- ls -->
+        <!-- echo "*ls-macros*******" -->
+        <!-- ls StRoot/macros -->
+        <!-- echo "*done************" -->
+        <!-- starver SL18h -->
+        <!-- cat ${FILELIST} -->
+        root4star -l -q -b runTreeRoots.C\(-1,\"${FILELIST}\",\"${JOBID}\",\"bad_tower.list\",\"bad_run.list\",500001\)
+	</command>
+    <stdout URL="file:./sums/out/$JOBID" />	
+    <stderr URL="file:./sums/err/$JOBID" />
+    <output fromScratch="*.log"  toURL="file:/gpfs/mnt/gpfs01/star/pwg/dstewart/outroot/is2019/TreeRoots/"/>
+    <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/pwg/dstewart/outroot/is2019/TreeRoots/"/>
+	<input URL="catalog:star.bnl.gov?events!=0,production=P18ih,filetype~picoDst,collision=pAu200,sname2=st_ssdmb||st_ssdmb_adc,year=2015,available=1,storage!=hpss,sanity=1" nFiles="all" preferStorage="local"/>
+
+	<SandBox installer="ZIP">
+        <Package> 
+            <File>file:./runTreeRoots.C</File>
+			<File>file:./StRoot</File>
+            <File>file:./.sl73_gcc485</File>
+            <File>file:./bad_tower.list</File>
+            <File>file:./bad_run.list</File>
+		</Package>		
+	</SandBox>
+	
+	<Generator>
+        <Location>./sums/input/</Location>
+        <ScriptLocation>./sums/input/</ScriptLocation>
+        <ListLocation>./sums/input/</ListLocation>
+	</Generator>
+<!-- For this file:
+     (1) Copy the shared libraries locally.
+     (2) Copy the input bad_towers and bad_run lists locally (they are blank for this iteration.
+     (3) Run the output locally
+     (4) Copy the output root file and log file back to the final location.
+     --> 
+
+
+</job>

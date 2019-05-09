@@ -9,6 +9,7 @@ out
 err
 **/schedTemplateExp.xml
 **/.consign
+<<<<<<< HEAD
 .consign
 *.d
 sched*.condor
@@ -17,6 +18,7 @@ sched*.list
 sched*.report
 .nfs*
 kate
+=======
 # mac 
 **/*.pdf
 *.so
@@ -24,16 +26,5 @@ kate
 *.d
 *.xlsx
 *.xlsm
-./arch
-arch/
-*.d
-.consign
-**/0
-**/1
-**/_*
-*.xml
-**/err/
-**/out/
-xml_err
-xml_out
-.consign
+
+>>>>>>> c3ca393dd75a93b7bbe9ab9204c5f5036ca15afe

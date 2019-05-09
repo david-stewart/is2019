@@ -7,13 +7,14 @@ class StChain;
 class StPicoDstMaker;
 
 StChain *chain;
-void runQA(
+void runData(
         const Int_t nEv_input=-1,
         const Char_t *picoDstList="test_files.list",
         const Char_t *out_name   ="test",
         const char* bad_tow_list ="bad_tower.list",
         const char* bad_run_list ="bad_run.list",
-        int debug = 0
+        const char* runQA_root ="runQA_results.root",
+        int trigger=500206
 ){
     //------------------------------------------------------
     // Load required libraries
@@ -24,9 +25,9 @@ void runQA(
     gSystem->Load("StPicoDstMaker");
     gSystem->Load("StDbBroker");
     gSystem->Load("St_db_Maker.so");
-    gSystem->Load("RunQA");
-    gSystem->Load("StRoot/macros/getRunBeginTime_C.so");
-    gSystem->Load("StRoot/macros/getRunDuration_C.so");
+    gSystem->Load("$FASTJET/lib/libfastjet");
+    gSystem->Load("$FASTJET/lib/libfastjettools");
+    gSystem->Load("RunData");
 
     //-----------------------------------------
     //  output file
@@ -36,16 +37,12 @@ void runQA(
     if (!log.is_open()) {
         cout << "Fatal error: could not open output file " << Form("%s.root",out_name) << endl;
         return kFatal;
-    }
+		}
 
     //-----------------------------------------
     //  get run parameters of the file list
     //-----------------------------------------
     log << "Reading input picoDst list: " << picoDstList << endl;
-    vector<int> runId;
-    vector<int> runDuration;
-    vector<string> runBeginTime;
-    set<int> runId_have;
 
     const char* database = "mysql://db04.star.bnl.gov:3414/RunLog?timeout=60";
     const char* user = "djs232";
@@ -60,32 +57,6 @@ void runQA(
         return kFatal;
     }
     string str;
-    set<int> runId_have;
-    while (getline(file,str)) {
-        TString tstr = str;
-        tstr = tstr(TPRegexp("_16\\d\\d\\d\\d\\d\\d_"));
-        tstr = tstr(1,8);
-        int id = tstr.Atoi();
-        if (runId_have.count(id)) continue; // already have the information for this run
-        runId_have.insert(id);
-        runId.push_back(id); 
-        int duration = getRunDuration(mysql, id);
-        if (duration == -1) {
-            cout << "Fatal error: could not get run duration for " << id << endl;
-            log  << "Fatal error: could not get run duration for " << id << endl;
-            return kFatal;
-        }
-        runDuration.push_back(duration);
-        
-        string beginTime = getRunBeginTime(mysql, id);
-        if (beginTime == "-1") {
-            cout << "Fatal error: could not get run duration for " << id << endl;
-            log  << "Fatal error: could not get run duration for " << id << endl;
-            return kFatal;
-        }
-        runBeginTime.push_back(beginTime);
-        cout << " run: " << id << "  duration: " << duration << "  beginTime: " << beginTime << endl;
-    }
     ifstream file;
     file.close();
     mysql->Close();
@@ -139,17 +110,16 @@ void runQA(
     starDb->SetAttr("blacklist", "smd");
     starDb->SetAttr("blacklist", "bsmd");
 
-    RunQA *myrunQA = new RunQA(
+    RunData *myrunQA = new RunData(
         "pf",
         out_name,
         log,
         picoMaker,
         bad_run_list,
         bad_tow_list,
+        runQA_root,
         starDb,
-        runId,
-        runDuration,
-        runBeginTime
+        trigger
     );
 
     log << "chain->Init()" <<endl;
@@ -170,7 +140,9 @@ void runQA(
         }
         chain->Clear();
         int iret = chain->Make(i);
+        /* log << " i: " << i << endl; */
         if (iret) { cout << "Bad return code!" << iret << endl; break;}
+        if (iret) { log  << "Bad return code!" << iret << endl; break;}
         total++;
     } 
 
