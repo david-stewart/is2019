@@ -37,3 +37,6 @@ arch/
 xml_err
 xml_out
 .consign
+.DS_Store
+**/.DS_Store
+*.root
