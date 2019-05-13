@@ -2,7 +2,7 @@ Note that below, each failure mode is checked sequentially
 and therefore if a file fails more than one test, it is only recorded with
 the first failure
 
-Total number of good files: 2063
+Total number of good files: 2088
 Total with no out file:     0
 Total with no err file:     0
 Total with no_weEND:        0

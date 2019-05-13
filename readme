@@ -24,8 +24,19 @@ TreeRoots/
 TreeRoots_SL18b/
     Same as TreeRoots/ but for st_physics (for 500206 and 500004 triggers)
 
+TreeRoots_analyze/
+    rcaf scripts to analyze TreeRoots into smaller files that can be moved to a mac
+
 mac/
-    files meant only to be run on my local computer. Some use Root6 functionaliy.
+    files meant only to be run on my local computer. Some use Root6 functionality.
+
+rcas/
+    analysis done on RCAS.
+
+    This is differentiated from the other rcas folders because it is sub-analysis,
+    using the output of other folders. Typically this is done because the initial
+    output trees (such as for TreeRoots_SL18b) are very large, and it is more
+    convenient to do further analysis on RCAS prior to moving to working on my mac.
     
 arch/
     old stuff. Probably can delete
