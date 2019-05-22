@@ -25,6 +25,7 @@ kate
 *.xlsx
 *.xlsm
 ./arch
+xml_out
 arch/
 *.d
 .consign
@@ -40,3 +41,5 @@ xml_out
 .DS_Store
 **/.DS_Store
 *.root
+xml_out
+xml_err

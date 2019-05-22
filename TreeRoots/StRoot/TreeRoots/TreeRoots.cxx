@@ -151,10 +151,14 @@ Int_t TreeRoots::Make() {
     /* cout << " a2 " << endl; */
     // cut on vz
     fevent.vz = picoEvent->primaryVertex().z();
-    /* if (TMath::Abs(fevent.vz) > 10) return kStOK; */
 
     fevent.vzVpd = picoEvent->vzVpd();
+    fevent.nVpdHitsEast = picoEvent->nVpdHitsEast();
+    fevent.nVpdHitsWest = picoEvent->nVpdHitsWest();
 
+
+    if (TMath::Abs(fevent.vz) > 10) return kStOK;
+    if (TMath::Abs(fevent.vz - fevent.vzVpd) > 6.) return kStOK;
 
     fevent.nch = 0;
     fevent.nchE = 0;

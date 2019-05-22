@@ -1,6 +1,51 @@
 All the analysis done here is done in the class
 /StRoot/TreeRootsAnalysis
 
-Options:
-    make_TProfile2D [1:in_file] [2:nevents] [3:out_file]
+ -- function TreeRootsAnalysis::normAcceptanceTo004
+    >>
+        treeRootAnalysis.csh normAcceptanceTo004 004 -1
+    >>
+        treeRootAnalysis.csh normAcceptanceTo004 001 -1
+
+ /* -- function TreeRootsAnalysis::nch_in_deciles */
+ /*    >> */
+ /*        treeRootAnalysis.csh nch_in_deciles 004 -1 hg_004 */
+ /*    >> */
+ /*        treeRootAnalysis.csh nch_in_deciles 001 -1 hg_001 */
+
+ -- function TreeRootsAnalysis::TProfile2D:
+    Options:
+        make_TProfile2D [1:in_file] [2:nevents] [3:out_file]
+
+    Run with commands:
+    >>
+        treeRootAnalysis.csh TProfile2D 001
+    >>
+        treeRootAnalysis.csh TProfile2D 004
+
+-- use results of above (./analysis_out/TProfile2D_001.root) to find the fit
+   parameters.
+
+   Run with command:
+   >>
+      treeRootAnalysis.csh Fit2D analysis_out/TProfile2D_004.root p2All_e 30. analysis_out/pAll_30vz.txt
+      treeRootAnalysis.csh Fit2D analysis_out/TProfile2D_004.root p2All_e 10. analysis_out/pAll_10vztxt
+
+      treeRootAnalysis.csh Fit2D analysis_out/TProfile2D_004.root p2sub_e 30. analysis_out/psub_30vz.txt
+      treeRootAnalysis.csh Fit2D analysis_out/TProfile2D_004.root p2sub_e 10. analysis_out/psub_10vz.txt
+
+--  function Treerootsanalysis::bbcVz_slices()
+    make TH1D(bbcE) TH1D of the 001 and 004 data in slices of vz:
+    treeRootAnalysis.csh bbcVz_slices 001 100000 short
+    treeRootAnalysis.csh bbcVz_slices 001 -1
+    treeRootAnalysis.csh bbcVz_slices 004 -1
+
+--  function measure and weight:
+    For each decile, find the average nch, nchE, nchW, nch_ltp5, 
+    w/ and w/o re-weighting for BBC_E distributions to BBC_E_004 |Vz|<=1 cm
+
+    Do for 001 and 004 data. See what the results are.
+
+
+Use results of TProfile2D to make 2D fits to the 004 data in order to remove the Vz ZDCx effects.
 

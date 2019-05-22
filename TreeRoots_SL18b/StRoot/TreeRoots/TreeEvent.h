@@ -10,12 +10,16 @@ struct TreeEvent : public TObject {
     float        vz;
     float        vzVpd;
 
+    int          nVpdHitsEast;
+    int          nVpdHitsWest;
+
     /* int          eventId; */
     /* int          i_file_name; */
     int         nch;  // 
     int         nchE;  // 
     int         nchW;  // 
-    int         nch_ltp5;  // N_{charged tracks w/ |eta|<0.5}
+    int         nch_ltp5;  // N_{charged tracks w/ |eta|<0.5}   
+
 
     int         ntow_gtp2;  // # towers > 0.2 GeV total
     int         ntow_gtp2_E; // ditto for east

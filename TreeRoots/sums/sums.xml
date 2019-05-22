@@ -8,6 +8,7 @@
         <!-- echo "*done************" -->
         <!-- starver SL18h -->
         <!-- cat ${FILELIST} -->
+        starver SL18h
         root4star -l -q -b runTreeRoots.C\(-1,\"${FILELIST}\",\"${JOBID}\",\"bad_tower.list\",\"bad_run.list\",500001\)
 	</command>
     <stdout URL="file:./sums/out/$JOBID" />	

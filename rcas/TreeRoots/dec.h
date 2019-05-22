@@ -9,7 +9,6 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <iostream>
-#include <sstream>
 using namespace std;
 // Header file for the classes stored in the TTree if any.
 #include <TObject.h>
@@ -17,15 +16,15 @@ using namespace std;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
-class TreeRootsAnalysis {
+class Deciles {
 public :
    Int_t           fCurrent; //!current Tree number in a TChain
    TFile          *fout; //!current Tree number in a TChain
-   istringstream   options;
-   /* const char*    nameout; */
+   const char*    nameout;
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-   Long64_t       nevents;
-   string         o_file_name;
+   TString        pfile_name;
+   Long64_t       user_entries;
+   
 
    // Declaration of leaf types
  //TreeEvent       *event;
@@ -84,33 +83,21 @@ public :
    TBranch        *b_event_ZdcSumAdcEast;   //!
    TBranch        *b_event_ZdcSumAdcWest;   //!
 
-   /* TreeRootsAnalysis(TTree *tree=0); */
-   TreeRootsAnalysis(const char* _options);
+   Deciles(TTree *tree=0);
+   Deciles(const char* file_in_name, const char* file_out_name, TString _pfile_name, Long64_t _user_entries);
 
-   virtual ~TreeRootsAnalysis();
+   virtual ~Deciles();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
    virtual void     Loop();
-   virtual void     normAcceptanceTo004();
-   virtual void     Deciles();
-   void             nch_in_deciles();
-
-   //------------------------------
-   // make_TProfile2D:
-   // required input:
-   // 1. Location of input file
-   // 2. number of entries to run
-   // 3. name of output file
-   //------------------------------
-   void             make_TProfile2D();
-   void             make_Deciles();
-   virtual void     bbcVz_slices();
-   //------------------------------
-   
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
-   ClassDef(TreeRootsAnalysis,1)
+   ClassDef(Deciles,1)
 };
+
+
+
+
 

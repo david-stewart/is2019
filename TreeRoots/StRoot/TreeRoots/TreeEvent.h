@@ -10,6 +10,9 @@ struct TreeEvent : public TObject {
     float        vz;
     float        vzVpd;
 
+    int          nVpdHitsEast;
+    int          nVpdHitsWest;
+
     /* int          eventId; */
     /* int          i_file_name; */
     int         nch;  // 

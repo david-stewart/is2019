@@ -90,41 +90,41 @@ RunData::RunData(
     file.close();
 
     // fill in the values for p0, p1, and p2
-    TFile*  runQA_results = new TFile(_runQA_summary, "READ");
+    /* TFile*  runQA_results = new TFile(_runQA_summary, "READ"); */
 
-    TNtuple *fit_data;
-    runQA_results->GetObject("bbcVz_10fit", fit_data);
+    /* TNtuple *fit_data; */
+    /* runQA_results->GetObject("bbcVz_10fit", fit_data); */
 
-    TProfile* read_bbcVz;
-    runQA_results->GetObject("bbcVz", read_bbcVz);
+    /* TProfile* read_bbcVz; */
+    /* runQA_results->GetObject("bbcVz", read_bbcVz); */
 
-    float b_p0{0}, b_p1{0}, b_p2{0}, b_runId{0}, b_entries_10t10{0};
-    fit_data->SetBranchAddress("p0",&b_p0);
-    fit_data->SetBranchAddress("p1",&b_p1);
-    fit_data->SetBranchAddress("p2",&b_p2);
-    fit_data->SetBranchAddress("runId",&b_runId);
-    fit_data->SetBranchAddress("entries_10t10",&b_entries_10t10);
-    for (int i=0; i<fit_data->GetEntries(); ++i) {
-        fit_data->GetEntry(i);
-        if (std::find(bad_run_list.begin(), bad_run_list.end(), b_runId) != bad_run_list.end()) continue;
-        if (b_entries_10t10 < 1000) {
-            bad_run_list.push_back( (int)b_runId);
-            std::sort(bad_run_list.begin(), bad_run_list.end());
-            log << " Adding run: " << (int)b_runId << " to bad run list because it has <1k events w/ |Vz|<10cm" << endl;
-            continue;
-        }
-        p0[(int)b_runId] = b_p0;
-        p1[(int)b_runId] = b_p1;
-        p2[(int)b_runId] = b_p2;
-    }
+    /* float b_p0{0}, b_p1{0}, b_p2{0}, b_runId{0}, b_entries_10t10{0}; */
+    /* fit_data->SetBranchAddress("p0",&b_p0); */
+    /* fit_data->SetBranchAddress("p1",&b_p1); */
+    /* fit_data->SetBranchAddress("p2",&b_p2); */
+    /* fit_data->SetBranchAddress("runId",&b_runId); */
+    /* fit_data->SetBranchAddress("entries_10t10",&b_entries_10t10); */
+    /* for (int i=0; i<fit_data->GetEntries(); ++i) { */
+    /*     fit_data->GetEntry(i); */
+    /*     if (std::find(bad_run_list.begin(), bad_run_list.end(), b_runId) != bad_run_list.end()) continue; */
+    /*     if (b_entries_10t10 < 1000) { */
+    /*         bad_run_list.push_back( (int)b_runId); */
+    /*         std::sort(bad_run_list.begin(), bad_run_list.end()); */
+    /*         log << " Adding run: " << (int)b_runId << " to bad run list because it has <1k events w/ |Vz|<10cm" << endl; */
+    /*         continue; */
+    /*     } */
+    /*     p0[(int)b_runId] = b_p0; */
+    /*     p1[(int)b_runId] = b_p1; */
+    /*     p2[(int)b_runId] = b_p2; */
+    /* } */
 
     // now get p_arb from a fit of the overall data
-    TF1* tfit = new TF1( "temp_pol2", "pol2");
-    read_bbcVz->Fit("temp_pol2","","",-10,10);
-    p0_arb = tfit->GetParameter(0);
-    p1_arb = tfit->GetParameter(1);
-    p2_arb = tfit->GetParameter(2);
-    runQA_results->Close();
+    /* TF1* tfit = new TF1( "temp_pol2", "pol2"); */
+    /* read_bbcVz->Fit("temp_pol2","","",-10,10); */
+    /* p0_arb = tfit->GetParameter(0); */
+    /* p1_arb = tfit->GetParameter(1); */
+    /* p2_arb = tfit->GetParameter(2); */
+    /* runQA_results->Close(); */
 
     fout_root = new TFile(Form("%s.root",_outName),"RECREATE");
 
@@ -199,6 +199,8 @@ Int_t RunData::Make() {
     // cut on vz
     fevent.vz = picoEvent->primaryVertex().z();
     if (TMath::Abs(fevent.vz) > 10) return kStOK;
+
+    fevent.vzVpd = picoEvent->vzVpd();
 
     // eventually cut on the vz-vpd, but not for now...
     /* double d_vzVpd { picoEvent->vzVpd() }; */
@@ -281,9 +283,9 @@ Int_t RunData::Make() {
 
     /* cout << " a0 " << particles.size() << " " << MaxNTracks << " " << towers.size() << " " << MaxNTowers << endl; */
 
-    fevent.nch = particles.size();
+    /* fevent.nch = particles.size(); */
     /* cout << " a1 " << fevent.nch << " " << MaxNTracks << " " << towers.size() << " " << MaxNTowers << endl; */
-    unsigned int nrec = (fevent.nch > MaxNTracks) ? MaxNTracks : fevent.nch;
+    unsigned int nrec = (particles.size() > MaxNTracks) ? MaxNTracks : particles.size();
     /* cout << " a2 " << nrec << endl; */
     for (unsigned int i{0}; i<nrec; ++i){
         /* cout << " a3 " << i << endl; */
@@ -293,8 +295,8 @@ Int_t RunData::Make() {
         track->eta = particles[i].eta();
     }
 
-    fevent.ntow = towers.size();
-    nrec = (fevent.ntow > MaxNTowers) ? MaxNTowers : fevent.ntow;
+    /* fevent.ntow = towers.size(); */
+    nrec = (towers.size() > MaxNTowers) ? MaxNTowers : towers.size();
     for (unsigned int i{0}; i<nrec; ++i){
         /* cout << " a4 " << i << endl; */
         EPhiEta* tower = (EPhiEta*) b_towers.ConstructedAt(i);
@@ -305,20 +307,6 @@ Int_t RunData::Make() {
 
     fevent.bbcES = 0;
     for (int i = 1; i < 16; ++i) fevent.bbcES += picoEvent->bbcAdcEast(i);
-
-    if (p0.count(fevent.runId) == 0) {
-        fevent.has_corr = false;
-        fevent.bbcES_corr = fevent.bbcES 
-                            - p1_arb * fevent.vz
-                            - p2_arb * fevent.vz * fevent.vz;
-
-    } else {
-        fevent.has_corr = true;
-        fevent.bbcES_corr = fevent.bbcES 
-                            - p0[fevent.runId] + p0_arb 
-                            - p1[fevent.runId] * fevent.vz
-                            - p2[fevent.runId] * fevent.vz * fevent.vz;
-    }
 
     fevent.bbcE = fevent.bbcES;
     for (int i = 16; i < 24; ++i) fevent.bbcE += picoEvent->bbcAdcEast(i);

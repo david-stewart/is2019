@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <job maxFilesPerProcess="100" fileListSyntax="xrootd" simulateSubmission="false" >
 	<command>
+        starver SL18b
         echo star version: $STAR_VERSION
-        root4star -l -q -b runTreeRoots.C\(-1,\"${FILELIST}\",\"${JOBID}\",\"bad_tower.list\",\"bad_run.list\",500004\)
+        root4star -l -q -b runTreeRoots.C\(-1,\"${FILELIST}\",\"${JOBID}\",\"bad_tower.list\",\"bad_run.list\",500206\)
         echo star version: $STAR_VERSION
 	</command>
     <stdout URL="file:./sums/out/$JOBID" />	

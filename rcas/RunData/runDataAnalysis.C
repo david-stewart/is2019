@@ -1,14 +1,14 @@
 #include <string.h>
-void treeRootAnalysis(
-        const char* options,
+void runDataAnalysis(
+        const char* options, // options include the input file
         TString which_analysis = "make_TProfile2D"
           ){
     gROOT->LoadMacro("$STAR/StRoot/StMuDSTMaker/COMMON/macros/loadSharedLibraries.C");
-    gSystem->Load("TreeRootsAnalysis");
+    gSystem->Load("RunDataAnalysis");
 
-    TreeRootsAnalysis* myAnalysis = new TreeRootsAnalysis(options);
-    if ( which_analysis == "make_TProfile2D") {
-        myAnalysis->make_TProfile2D();
+    RunDataAnalysis* myAnalysis = new RunDataAnalysis(options);
+    if ( which_analysis == "Loop") {
+        myAnalysis->Loop();
     } else {
         cout << " Fatal error, which_analysis option \"" << which_analysis << "\" isn't recognized." << endl;
     }

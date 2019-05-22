@@ -155,11 +155,15 @@ Int_t TreeRoots::Make() {
     /* cout << " a2 " << endl; */
     // cut on vz
     fevent.vz = picoEvent->primaryVertex().z();
+    
+    // cout << " oo oo oo  -------- oo oo oo dst: " << picoDst << " event: <<" << picoEvent << ">>  vertex: <<" /*<< picoEvent->primaryVertex() */<< ">>    vz: " << picoEvent->primaryVertex().z() << "  runId " << picoEvent->runId() << endl;
     /* cout << " a3 " << endl; */
     /* if (TMath::Abs(fevent.vz) > 10) return kStOK; */
     /* cout << " a4 " << endl; */
 
     fevent.vzVpd = picoEvent->vzVpd();
+    fevent.nVpdHitsEast = picoEvent->nVpdHitsEast();
+    fevent.nVpdHitsWest = picoEvent->nVpdHitsWest();
 
 
     fevent.nch = 0;
@@ -238,13 +242,23 @@ Int_t TreeRoots::Make() {
             /* StThreeVectorF towLoc = mPosition->getPosFromVertex( */ 
             /*         (StVertex*) mevent->primaryVertex(), i_tower); */
             StPicoBTowHit* bTowHit = picoDst->btowHit(i_tower-1); 
+
             if (!bTowHit) { 
                 log << " NO BTOWHIT " << endl;
                 continue;
             }
-            StEmcPosition *mPosition = new StEmcPosition();
-            StThreeVectorF towLoc = mPosition->getPosFromVertex( 
-                    picoEvent->primaryVertex(), i_tower);
+            StThreeVectorF towLoc = StEmcPosition().getPosFromVertex(picoEvent->primaryVertex(), i_tower);
+
+            /* cout << " version A("<<i_tower<<"): " << endl; */
+            /* StEmcPosition *mPosition = new StEmcPosition(); */
+            /* StThreeVectorF towLoc_0 = mPosition->getPosFromVertex(picoEvent->primaryVertex(), i_tower); */
+            /* cout << " are the same? " << (towLoc_0 == towLoc_1) << endl; */
+            /* cout << " loc: " << towLoc_0.pseudoRapidity() << "  " << towLoc_1.pseudoRapidity() << endl; */
+            /* if (i_tower > 100) break; */
+            /* StThreeVectorF towLoc = mPosition->getPosFromVertex( */ 
+            /*         picoEvent->primaryVertex(), i_tower); */
+            /* StThreeVectorF towLoc = StEmcPosition().getPosFromVertex( picoEvent->primaryVertex(), i_tower); */
+            /* delete mPosition; */
             /* float xT, yT, zT; */
             /* bemcGeom->getXYZ(i_tower, xT, yT, zT); */
             /* TVector3 towLoc {xT, yT, zT}; */

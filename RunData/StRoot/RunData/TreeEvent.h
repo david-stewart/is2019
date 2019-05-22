@@ -6,14 +6,15 @@
 struct TreeEvent : public TObject {
 	virtual ~TreeEvent() {} ;
     int       runId;      
-    int       nch;  // doesn't *have* to match sum of jet tracks;
-    int       ntow; // number of towers
+    /* int       nch;  // doesn't *have* to match sum of jet tracks; */
+    /* int       ntow; // number of towers */
     int       bbcES;  // bbc East adc
-    int       bbcES_corr;  // bbc East adc
+    /* int       bbcES_corr;  // bbc East adc */
     double    bbcE;  // bbc East adc
     float     zdcX;
     float     vz;
-    bool      has_corr;
+    float     vzVpd;
+    /* bool      has_corr; */
 
     ClassDef(TreeEvent,1);
 };

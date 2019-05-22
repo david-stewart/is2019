@@ -20,12 +20,11 @@ TrackEmbedding/ -> old code. Needs to be refactored. Still used to get the embed
 TreeRoots/
     Current code. Makes trees of bbc[ES/EL/E/WS/WL/W] vz vzVpd ZDCx etc...
     Use to make EA definitions. (Probably replaces EA_metrics from above).
-    
+
 TreeRoots_SL18b/
     Same as TreeRoots/ but for st_physics (for 500206 and 500004 triggers)
 
-TreeRoots_analyze/
-    rcaf scripts to analyze TreeRoots into smaller files that can be moved to a mac
+
 
 mac/
     files meant only to be run on my local computer. Some use Root6 functionality.
@@ -37,6 +36,8 @@ rcas/
     using the output of other folders. Typically this is done because the initial
     output trees (such as for TreeRoots_SL18b) are very large, and it is more
     convenient to do further analysis on RCAS prior to moving to working on my mac.
+
+    ./TreeRoots
     
 arch/
     old stuff. Probably can delete

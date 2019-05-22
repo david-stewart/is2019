@@ -1,3 +1,3 @@
 #!/usr/bin/csh
-starpro
-root4star -q -b -l ./runTreeRoots.C\(3000\)
+starver SL18b
+root4star -q -b -l ./runTreeRoots.C\(100\)
