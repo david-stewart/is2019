@@ -1,3 +1,11 @@
+2019.05.23
+The proliferation of post-processing programs is getting unwieldy.
+- [ ] Writing a new sums.xml and a new sums.csh for those not outdated.
+- [ ] Will also eventually move treeRootAnalysis.csh and _sums.xml to arch.
+
+
+
+--------------------------------------------------------------------
 All the analysis done here is done in the class
 /StRoot/TreeRootsAnalysis
 

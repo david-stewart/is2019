@@ -39,9 +39,10 @@ public :
    UInt_t          fUniqueID;
    UInt_t          fBits;
    Int_t           runId;
+   Float_t         ranking;
    Int_t           bbcES;
    Double_t        bbcE;
-   Float_t         zdcX;
+   Float_t         ZDCx;
    Float_t         vz;
    Float_t         vzVpd;
    Int_t           track_;
@@ -61,9 +62,10 @@ public :
    TBranch        *b_event_fUniqueID;   //!
    TBranch        *b_event_fBits;   //!
    TBranch        *b_event_runId;   //!
+   TBranch        *b_event_ranking;   //!
    TBranch        *b_event_bbcES;   //!
    TBranch        *b_event_bbcE;   //!
-   TBranch        *b_event_zdcX;   //!
+   TBranch        *b_event_ZDCx;   //!
    TBranch        *b_event_vz;   //!
    TBranch        *b_event_vzVpd;   //!
    TBranch        *b_track_;   //!
@@ -87,9 +89,27 @@ public :
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
    virtual void     Loop();
-   virtual void     Deciles();
+   //-------------------------
+   // custom loops
+   //-------------------------
+   void     Deciles();
+   void     WriteJetTree();
+
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
-   ClassDef(RunDataAnalysis,1)
+
+    static const double p_offset;
+    static const double p0;
+    static const double p1;
+    static const double p2;
+    static const double p3;
+    static const double p4;
+    static const double p5;
+
+    double correct_bbc();
+    float delta_phi(int);
+    float delta_phi(float);
+
+    ClassDef(RunDataAnalysis,1)
 };
 

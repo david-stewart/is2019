@@ -6,27 +6,44 @@
 struct TreeEvent : public TObject {
 	virtual ~TreeEvent() {} ;
     int       runId;      
-    /* int       nch;  // doesn't *have* to match sum of jet tracks; */
-    /* int       ntow; // number of towers */
     int       bbcES;  // bbc East adc
-    /* int       bbcES_corr;  // bbc East adc */
     double    bbcE;  // bbc East adc
-    float     zdcX;
+    float     ZDCx;
     float     vz;
     float     vzVpd;
-    /* bool      has_corr; */
+
+    int       nch;
+    int       n_isTOF;
+    int       n_isBEMC;
+
+    bool      b_rank; // true for > 0 neg for < 0
+    bool      b_vz10; // is |vz|<10
+    bool      b_vzVpd6; // is |vz-vpdvz|<6
+    bool      b_all; // b_rank && b_vz10 && b_vzVpd6
 
     ClassDef(TreeEvent,1);
 };
 
-class EPhiEta : public TObject {
+class myTrack : public TObject {
 	public:
-    EPhiEta() {} ;
-	virtual ~EPhiEta() {};
-    float   E;
+    myTrack() {} ;
+	virtual ~myTrack() {};
+    float   pt;
     float   phi;
     float   eta;
-	ClassDef(EPhiEta,1);
+    bool    isTOF;
+    bool    isBEMC;
+	ClassDef(myTrack,1);
+};
+
+class myTower : public TObject {
+	public:
+    myTower() {} ;
+	virtual ~myTower() {};
+    float   Et;
+    float   phi;
+    float   eta;
+	ClassDef(myTower,1);
 };
 
 #endif

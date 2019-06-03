@@ -14,541 +14,371 @@
 using std::cout;
 using std::cin;
 
-void TreeRootsAnalysis::Deciles(){
+const double TreeRootsAnalysis::p_offset = 1900.;
+const double TreeRootsAnalysis::p0 = 13643.1;
+const double TreeRootsAnalysis::p1 = 53.9611;
+const double TreeRootsAnalysis::p2 = -0.182168;
+const double TreeRootsAnalysis::p3 = 1.41106;
+const double TreeRootsAnalysis::p4 = -3.40385e-05;
+const double TreeRootsAnalysis::p5 = 0.000439491;
+
+double TreeRootsAnalysis::correct_bbc() {
+    return bbcE + p0 + p_offset - p1*vz - p2*vz*vz - p3*ZDCx - p4*ZDCx*ZDCx - p5*vz*ZDCx;
+}
+
+void TreeRootsAnalysis::Nch(){
    if (fChain == 0) return;
-  
-   //-----------------------
-   // options used:
-   //----------------------
-   // 4. decile_root_file
-   // 5. decile_root_name
-   // 6. min Et value
-   // 7. max Et value
-   //     note: yes it would be more efficienct to fill the Et values 
-   //           in one go -- but it is not worth the extra loop of logic
-   //           and naming hassle. Therefore, one set of reading per loop it is.
-    string decile_root_file;
-    string decile_th1d;
-    /* string towerEt_file; */
-    double et_min;
-    double et_max;
-    options >> decile_root_file >> decile_th1d >> et_min >> et_max;
+   TFile* f_out = new TFile(o_file_name.c_str(),"RECREATE");
 
-    //read in the deciles root file to find the value of the deciles
-    TH1D* hg_dec;
-    double xq[11], yq[11];
-    for (unsigned int i=0; i<11;++i){ xq[i] = 0.1*i; }
-    TFile *f_deciles = new TFile(decile_root_file.c_str(),"read");
-    f_deciles->GetObject(decile_th1d.c_str(), hg_dec);
-    hg_dec->GetQuantiles(11,yq,xq);
+   TH1D *hg_nch = new TH1D("nch","N_{ch} |vz-vzVpd|, |vz|<10, rnk>0, ZDCx#in[7k,24k];N_{ch};",81.,-0.5,80.5);
 
-    //run the loop
-    TFile *fout    = new TFile(o_file_name.c_str(), "recreate");
-    TH1D     *nEvents = new TH1D("nEvents","nEVents;Event Activity_{BBC};#frac{1}{N_{ev}}#frac{dN_{ev}}{dEA_{BBC}}", 10, yq);
-    TProfile *hg_nch     = new TProfile("hg_nch","nch;Event Activity_{BBC};#LTN_{cv}#GT", 10, yq);
+   Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nbytes = 0, nb = 0;
+   if (nevents != -1 && nevents < nentries) nentries = nevents;
+   cout << "nentries " << nentries/1000000 << "M" << endl;
+   for (Long64_t jentry=0; jentry<nentries;jentry++) {
+      Long64_t ientry = LoadTree(jentry);
+      if (ientry < 0) break;
+      nb = fChain->GetEntry(jentry);   nbytes += nb;
+      if (jentry%100000 == 0) cout << "Finished " << Form("%.1f",jentry/1.e6) << "M entries " << endl;
+      if (ranking > 0 
+              && TMath::Abs(vzVpd-vz)<6. 
+              && TMath::Abs(vz)<10 
+              && ZDCx > 7.e3 
+              && ZDCx < 24.e3) hg_nch->Fill(nch);
+      // if (Cut(ientry) < 0) continue;
+   }
+   f_out->Write();
+   f_out->Close();
+}
 
-    nEvents->Sumw2();
-    hg_nch->Sumw2();
-    /* sumpt->Sumw2(); */
-    /* maxpt->Sumw2(); */
-    
-    //-----------------
-    // run the loop
-    //-----------------
-    Long64_t nentries = fChain->GetEntriesFast();
-    if (nevents != -1 && nevents < nentries) nentries = nevents;
-    Long64_t nbytes = 0, nb = 0;
+void TreeRootsAnalysis::BBC_dist(){
+   if (fChain == 0) return;
+   TFile* f_out = new TFile(o_file_name.c_str(),"RECREATE");
+   bool pos_ranking;
+   options >> pos_ranking;
+
+   double lo_bbc =   -1000.5;
+   double hi_bbc =  110000.5;
+   int    nbins_bbc = (int)(hi_bbc-lo_bbc);
+
+   TH1D *bbc = new TH1D("bbc","BBC_E for |vz-vzVpd|, |vz|<10; BBC_{east}",1000,-1000.,110000.);
+   TH1D *deciles = new TH1D("deciles","BBC_E for |vz-vzVpd|, |vz|<10; BBC_{east}",nbins_bbc,lo_bbc,hi_bbc);
+
+   TH1D *bbc_corr = new TH1D("bbc_corr","BBC_E for |vz-vzVpd|, |vz|<10; BBC_{east}",1000,-1000.,110000.);
+   TH1D *deciles_corr = new TH1D("deciles_corr","BBC_E for |vz-vzVpd|, |vz|<10; BBC_{east}",nbins_bbc,lo_bbc,hi_bbc);
+
+    double p_offset = 1900.;
+    double p0 = 12612.4;
+    double p1 = 53.8662;
+    double p2 = -0.874484;
+    double p3 = 1.30989;
+    double p4 = -3.05535e-05;
+    double p5 = 0.000262333;
+
+   Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nbytes = 0, nb = 0;
+   cout << "nentries " << nentries/1000000 << "M" << endl;
+   for (Long64_t jentry=0; jentry<nentries;jentry++) {
+      Long64_t ientry = LoadTree(jentry);
+      if (ientry < 0) break;
+      nb = fChain->GetEntry(jentry);   nbytes += nb;
+      if (jentry%100000 == 0) cout << "Finished " << Form("%.1f",jentry/1.e6) << "M entries " << endl;
+
+      if (pos_ranking) {
+          if (ranking <=0) continue;
+      } else {
+          if (ranking > 0) continue;
+      }
+
+      if (TMath::Abs(vzVpd-vz)<6 && TMath::Abs(vz)<10 && ZDCx>7.e3 && ZDCx <24.e3) {
+          bbc->Fill(bbcE);
+          deciles->Fill(bbcE);
+          double val = bbcE + p0 + p_offset - p1*vz - p2*vz*vz - p3*ZDCx - p4*ZDCx*ZDCx - p5*vz*ZDCx;
+          bbc_corr->Fill(val);
+          deciles_corr->Fill(val);
+      }
+      // if (Cut(ientry) < 0) continue;
+   }
+   f_out->Write();
+   f_out->Close();
+}
+
+
+void TreeRootsAnalysis::LumiProfiles(){
+   if (fChain == 0) return;
+   TFile* f_out = new TFile(o_file_name.c_str(),"RECREATE");
+   bool pos_ranking;
+   options >> pos_ranking;
+
+   TProfile *bbc = new TProfile("bbc","bbc vz ZDCx;ZDCx;bbc",1000,0,50000);
+   TProfile *bbc_i10 = new TProfile("bbc_i10","bbc vz ZDCx, |vz|<10;ZDCx;bbc",1000,0,50000);
+   TProfile *bbc_i10i6 = new TProfile("bbc_i10i6","bbc vz ZDCx, |vz|<10, |vpd-vz|<6;ZDCx;bbc",1000,0,50000);
+   TProfile *bbc_i6 = new TProfile("bbc_i6","bbc vz ZDCx, |vpd-vz|<6;ZDCx;bbc",1000,0,50000);
+   TProfile *bbc_i10i6zRange = new TProfile("bbc_i10i6zRange","bbc vz ZDCx, |vpd-vz|<6, |vz|<10, bbc#in(7k,24k);ZDCx;bbc",1000,0,50000);
+   TProfile2D* b_vzZDCz = new TProfile2D("b_vzZDCz","bbcE(vz,ZDCx);vz;ZDCx",20,-10,10,100,7000.,24000.);
+   TH1D *hg_bbc = new TH1D("hg_bbc","BBC_E for |vz-vzVpd|, |vz|<10; BBC_{east}",1000,-1000.,110000.);
+   TH1D *deciles = new TH1D("bbc_deciles","BBC_E for |vz-vzVpd|, |vz|<10; BBC_{east}",100000,-1000.,110000.);
+
+   Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nbytes = 0, nb = 0;
+   cout << "nentries " << nentries/1000000 << "M" << endl;
+   for (Long64_t jentry=0; jentry<nentries;jentry++) {
+      Long64_t ientry = LoadTree(jentry);
+      if (ientry < 0) break;
+      nb = fChain->GetEntry(jentry);   nbytes += nb;
+      if (jentry%100000 == 0) cout << "Finished " << Form("%.1f",jentry/1.e6) << "M entries " << endl;
+
+      if (pos_ranking) {
+          if (ranking <=0) continue;
+      } else {
+          if (ranking > 0) continue;
+      }
+
+      bbc->Fill(ZDCx, bbcE);
+      if (TMath::Abs(vz)<10) bbc_i10->Fill(ZDCx, bbcE);
+      if (TMath::Abs(vzVpd-vz)<6) bbc_i6->Fill(ZDCx, bbcE);
+      if (TMath::Abs(vzVpd-vz)<6 && TMath::Abs(vz)<10) bbc_i10i6->Fill(ZDCx, bbcE);
+      if (TMath::Abs(vzVpd-vz)<6 && TMath::Abs(vz)<10 && ZDCx>7.e3 && ZDCx <24.e3) {
+          bbc_i10i6zRange->Fill(ZDCx, bbcE);
+          b_vzZDCz->Fill(vz,ZDCx,bbcE);
+          hg_bbc->Fill(bbcE);
+          deciles->Fill(bbcE);
+      }
+      // if (Cut(ientry) < 0) continue;
+   }
+   f_out->Write();
+   f_out->Close();
+}
+
+void TreeRootsAnalysis::nch_TProfile2D(){
+   if (fChain == 0) return;
+   TFile* f_out = new TFile(o_file_name.c_str(),"RECREATE");
+
+   bool pos_ranking;
+   bool corr_bbc;
+   bool cut_on_4GeV;
+   options >> pos_ranking >> corr_bbc >> cut_on_4GeV;
+
+   // use two tags:
+   //   i6 for |vz-vzVpd|<6cm
+   //   o6 for |vz-vzVpd|>6cm  
+   //   yT for yes tof matched
+   //   nT for not tof matched
+   //   b for bbc
+   //   z for vz
+   //   x for ZDCx
+
+    double p0 = 12612.4; 
+    double p_offset = 1900.;
+    double p1 = 53.8662;
+    double p2 = -0.874484;
+    double p3 = 1.30989;
+    double p4 = -3.05535e-05;
+    double p5 = 0.000262333;
+
+   TH2D       *hg2_bz_i6   = new TH2D("hg2_bz_i6", "bbcE(vz) |vz-vpd|<6;  bbc;Vz",  500,0.,100000.,60,-30,30);
+   TH2D       *hg2_bz_o6   = new TH2D("hg2_bz_o6", "bbcE(vz) |vz-vpd|>6;  bbc;Vz",  500,0.,100000.,60,-30,30);
+
+   TH2D       *hg2_bx_i6   = new TH2D("hg2_bx_i6", "bbcE(ZDCx) |vz-vpd|<6;bbc;ZDCx",500,0.,100000.,100,7000.,24000.);
+   TH2D       *hg2_bx_o6   = new TH2D("hg2_bx_o6", "bbcE(ZDCx) |vz-vpd|>6;bbc;ZDCx",500,0.,100000.,100,7000.,24000.);
+
+
+   TProfile2D *bpr2_zx       = new TProfile2D("pr2_bbc_vz_ZDCx_noCorr", "bbcE(ZDCx,vZ);Vz;ZDCx",60,-30,30,100,7000.,24000.);
+   TProfile2D *bpr2_zx_corr  = new TProfile2D("pr2_bbc_vz_ZDCx", "bbcE(ZDCx,vZ);Vz;ZDCx",60,-30,30,100,7000.,24000.);
+   //----------------
+   // nch sets below:
+   //----------------
+   // nch vs vz vz vpd
+   TProfile2D *vz_v_vpd = new TProfile2D("vz_v_vpd", 
+    "nch(vz,vzVpd) (w/vzVpd:underflow=-50.5,vzVpd:over=50.5);vz;vzVpd", 60,-30,30, 102,-51.,51.);
+
+   TH2D *hg_vz_v_vpd = new TH2D("hg_vz_v_vpd", 
+    "vz vz vzVpd (w/vzVpd:underflow=-50.5,vzVpd:over=50.5);vz;vzVpd", 60,-30,30, 102,-51.,51.);
+
+   // bbc vz sets
+   TProfile2D *bz_i6yT = new TProfile2D("bz_i6yT", "n_{ch,tof-matched},|vz-vpd|<6,;bbc_e;vz",500,0.,100000.,60,-30,30);
+   TProfile2D *bz_o6yT = new TProfile2D("bz_o6yT", "n_{ch,tof-matched},|vz-vpd|>6,;bbc_e;vz",500,0.,100000.,60,-30,30);
+
+   TProfile2D *bz_i6nT = new TProfile2D("bz_i6nT", "n_{ch,!tof-matched},|vz-vpd|<6,;bbc_e;vz",500,0.,100000.,60,-30,30);
+   TProfile2D *bz_o6nT = new TProfile2D("bz_o6nT", "n_{ch,!tof-matched},|vz-vpd|>6,;bbc_e;vz",500,0.,100000.,60,-30,30);
+
+   // bbc ZDCx sets
+   TProfile2D *bx_i6yT = new TProfile2D("bx_i6yT", "n_{ch,tof-matched},|vz-vpd|<6,;bbc_e;ZDCx",500,0.,100000.,100,7000.,24000.);
+   TProfile2D *bx_o6yT = new TProfile2D("bx_o6yT", "n_{ch,tof-matched},|vz-vpd|>6,;bbc_e;ZDCx",500,0.,100000.,100,7000.,24000.);
+
+   TProfile2D *bx_i6nT = new TProfile2D("bx_i6nT", "n_{ch,!tof-matched},|vz-vpd|<6,;bbc_e;ZDCx",500,0.,100000.,100,7000.,24000.);
+   TProfile2D *bx_o6nT = new TProfile2D("bx_o6nT", "n_{ch,!tof-matched},|vz-vpd|>6,;bbc_e;ZDCx",500,0.,100000.,100,7000.,24000.);
+
+   // ZDCx vz sets
+   TProfile2D *xz_i6yT = new TProfile2D("xz_i6yT", "n_{ch,tof-matched},|vz-vpd|<6,;bbc_e;ZDCx", 100,7000.,24000.,60,-30,30);
+   TProfile2D *xz_o6yT = new TProfile2D("xz_o6yT", "n_{ch,tof-matched},|vz-vpd|>6,;bbc_e;ZDCx", 100,7000.,24000.,60,-30,30);
+
+   TProfile2D *xz_i6nT = new TProfile2D("xz_i6nT", "n_{ch,!tof-matched},|vz-vpd|<6,;bbc_e;ZDCx",100,7000.,24000.,60,-30,30);
+   TProfile2D *xz_o6nT = new TProfile2D("xz_o6nT", "n_{ch,!tof-matched},|vz-vpd|>6,;bbc_e;ZDCx",100,7000.,24000.,60,-30,30);
+
+   Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nbytes = 0, nb = 0;
+   if (nevents != -1 && nevents < nentries) nentries = nevents;
     for (Long64_t jentry=0; jentry<nentries;jentry++) {
         Long64_t ientry = LoadTree(jentry);
         if (ientry < 0) break;
+        if ((jentry % 1000000) == 0) cout << " finished " << jentry/1000000 << "M entries" << endl;
         nb = fChain->GetEntry(jentry);   nbytes += nb;
-        // correct the bbc signal for vz and zdcX
-        double bbc = bbc_E-53.82*vz-0.4371*vz*vz-0.6826*ZDCx+1.15e-5/ZDCx*ZDCx;
-        if (TMath::Abs(vz - vzVpd)>6) continue;
 
-        nEvents->Fill(bbc);
-        hg_nch->Fill(bbc,nch);
-   }
-    /* cout << "Entries: " << sumpt->GetEntries() << endl; */
-   fout->Write();
-   fout->Close();
-}
+        if ( pos_ranking && ranking <= 0) continue;
+        if (!pos_ranking && ranking >  0) continue;
+        if (ZDCx<7000 || ZDCx > 24000) continue;
+        if (cut_on_4GeV && (ntow_gt4 == 0)) continue;
 
+        double t_vzVpd = (vzVpd < -50) ? -50.5 :
+                         (vzVpd >  50) ?  50.5 :
+                         vzVpd;
+        double bbc_val = (corr_bbc) 
+            ? bbcE + p0 + p_offset - p1*vz - p2*vz*vz - p3*ZDCx - p4*ZDCx*ZDCx - p5*vz*ZDCx
+            : bbcE;
 
-void TreeRootsAnalysis::normAcceptanceTo004(){
-   if (fChain == 0) return;
-   /* cout << "a1" << endl; */
-
-
-   //---------------------------------------------------------------------------
-   // fill in options: rebin_factor (5), first_norm_bin (30), last_norm_bin (31)
-   //---------------------------------------------------------------------------
-   string hg2_root_file, hg2_004_root_file;
-   int rebin_factor, first_norm_bin, last_norm_bin; // 5, 30, 31
-   /* options >> hg2_root_file >> hg2_004_root_file >> rebin_factor >> first_norm_bin >> last_norm_bin; */
-   options >> hg2_004_root_file >> hg2_root_file >> rebin_factor >> first_norm_bin >> last_norm_bin;
-
-   vector<int> vz_normal_bins;
-   for (int i = first_norm_bin; i<=last_norm_bin; ++i) vz_normal_bins.push_back(i);
-
-   // -- make the new histogram --
-   cout << "opening file " << o_file_name << endl;
-   fout = new TFile(o_file_name.c_str(),"RECREATE");
-   TH2D* hg2_temp;
-   TH2D* hg2_004_temp;
-
-
-   TFile *f004 = new TFile(hg2_004_root_file.c_str(),"read");
-   f004->GetObject("hg2",hg2_004_temp);
-
-
-   TFile *f_hg2 = new TFile(hg2_root_file.c_str(),"read");
-   f_hg2->GetObject("hg2",hg2_temp);
-
-   fout->cd();
-   TH2D* hg2     = (TH2D*) hg2_temp->Clone("hg2");
-   TH2D* hg2_004 = (TH2D*) hg2_004_temp->Clone("hg2_004");
-
-
-   int n_bbc = hg2->GetXaxis()->GetNbins();
-   int n_vz  = hg2->GetYaxis()->GetNbins();
-   double min_bbc = hg2->GetXaxis()->GetBinLowEdge(1);
-   double max_bbc = hg2->GetXaxis()->GetBinLowEdge(n_bbc+1);
-   double min_vz  = hg2->GetYaxis()->GetBinLowEdge(1);
-   double max_vz  = hg2->GetYaxis()->GetBinLowEdge(n_vz+1);
-
-
-   //normalize in bbc per vz
-   TH1D* scale_factors = hg2->ProjectionY("scale_factors");
-   for (int i_vz=1; i_vz<n_vz+1; ++i_vz) {
-       double factor = scale_factors->GetBinContent(i_vz); 
-       cout << " factor(" << i_vz << "): " << factor << endl;
-       if (factor < 1.) cout << " factor("<<i_vz<<") " << factor << endl;
-       for (int i_bbc=1; i_bbc<n_bbc+1; ++i_bbc) {
-           double val = hg2->GetBinContent(i_bbc, i_vz) / factor;
-           /* if (val > 1) cout << " (i_vz,i_bbc, val) " << i_vz<<" " << i_bbc<<" " << val << "   " << factor << endl; */
-           hg2->SetBinContent(i_bbc, i_vz, val);
-       }
-   }
-   //normalize in bbc per vz do the same for hg2_004
-   scale_factors = hg2_004->ProjectionY("scale_factors");
-   for (int i_vz=1; i_vz<n_vz+1; ++i_vz) {
-       double factor = scale_factors->GetBinContent(i_vz); 
-       if (factor < 1.) cout << " factor("<<i_vz<<") " << factor << endl;
-       for (int i_bbc=1; i_bbc<n_bbc+1; ++i_bbc) {
-           double val =                    hg2_004->GetBinContent(i_bbc, i_vz) / factor;
-           /* if (val > 1) cout << " (i_vz,i_bbc, val) " << i_vz<<" " << i_bbc<<" " << val << "   " << factor << endl; */
-           hg2_004->SetBinContent(i_bbc, i_vz, val);
-       }
-   }
-
-
-   for (int i_vz=1; i_vz<n_vz+1; ++i_vz) { 
-       hg2->SetBinContent(0, i_vz,0.);
-       hg2->SetBinContent(n_bbc+1, i_vz, 0.);
-       hg2_004->SetBinContent(0, i_vz,0.);
-       hg2_004->SetBinContent(n_bbc+1, i_vz, 0.);
-   }
-   for (int i_vz=1; i_vz<n_vz+1; ++i_vz) { 
-       hg2->SetBinContent(0, i_vz,0.);
-       hg2->SetBinContent(n_bbc+1, i_vz, 0.);
-       hg2_004->SetBinContent(0, i_vz,0.);
-       hg2_004->SetBinContent(n_bbc+1, i_vz, 0.);
-   }
+        vz_v_vpd->Fill(vz,t_vzVpd,bbc_val);
+        hg_vz_v_vpd->Fill(vz,t_vzVpd);
+        int no_tof = nch-nch_tof;
         
-   /* hg2_004->Rebin(rebin_factor); */
-   cout << " n_bbc & nvz " << n_bbc << " " << n_vz << endl;
+        if (is_vz_vzVpd){
+            bpr2_zx->Fill(vz,ZDCx,bbcE);
+            bpr2_zx_corr->Fill(vz,ZDCx,bbc_val);
 
+            hg2_bz_i6->Fill(bbc_val,vz);
+            hg2_bx_i6->Fill(bbc_val,ZDCx);
 
-   TH1D* standard = hg2_004->ProjectionX("stand_004", first_norm_bin, last_norm_bin);
-   standard->SetTitle(Form("standard bbc_E distr: 500004 at bins %i-%i;bbc_E;N/N_{total}",first_norm_bin, last_norm_bin));
-   standard->Rebin(rebin_factor);
-   standard->Scale(1./standard->Integral());
+            //-------nch and nch_tof profiles-------
+            bz_i6yT->Fill(bbc_val,vz,nch_tof);
+            bz_i6nT->Fill(bbc_val,vz,no_tof);
 
-   TH2D     *nEv_n = new TH2D("nEv_n","nEvents per decile no weighting;bbc_E;vz",
-           n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-   TH2D     *nEv_w = new TH2D("nEv_w","nEvents per decile weighted;bbc_E;vz",
-           n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
+            bx_i6yT->Fill(bbc_val,ZDCx,nch_tof);
+            bx_i6nT->Fill(bbc_val,ZDCx,no_tof);
 
-   TProfile2D *nch_n = new TProfile2D("nch_n", "Nch |#eta|<1.0, no weighting;bbc_E;vz",
-           n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-   TProfile2D *nch_w = new TProfile2D("nch_w", "Nch |#eta|<1.0, weighted;bbc_E;vz",
-           n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
+            xz_i6yT->Fill(ZDCx,vz,nch_tof);
+            xz_i6nT->Fill(ZDCx,vz,no_tof);
+        } else {
+            hg2_bz_o6->Fill(bbc_val,vz);
+            hg2_bx_o6->Fill(bbc_val,ZDCx);
+            
+            //-------nch and nch_tof profiles-------
+            bz_o6yT->Fill(bbc_val,vz,nch_tof);
+            bz_o6nT->Fill(bbc_val,vz,no_tof);
 
-   TProfile2D *nchE_n = new TProfile2D("nchE_n", "Nch #eta<0, no weighting;bbc_E;vz",
-           n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-   TProfile2D *nchE_w = new TProfile2D("nchE_w", "Nch #eta<0, weighted;bbc_E;vz",
-       n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
+            bx_o6yT->Fill(bbc_val,ZDCx,nch_tof);
+            bx_o6nT->Fill(bbc_val,ZDCx,no_tof);
 
-   TProfile2D *nchW_n = new TProfile2D("nchW_n", "Nch #eta>0, no weighting;bbc_E;vz",
-       n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-   TProfile2D *nchW_w = new TProfile2D("nchW_w", "Nch #eta>0, weighted;bbc_E;vz",
-       n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-
-   TProfile2D *nchC_n = new TProfile2D("nchC_n", "Nch |#eta|<0.5, no weighting;bbc_E;vz",
-       n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-   TProfile2D *nchC_w = new TProfile2D("nchC_w", "Nch |#eta|<0.5, weighted;bbc_E;vz",
-       n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-
-   TProfile2D *ntow_n = new TProfile2D("ntow_n", "Number of towers with E_{T}>0.2N, no weighting;bbc_E;vz",
-       n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-   TProfile2D *ntow_w = new TProfile2D("ntow_w", "Number of towers with E_{T}>0.2N, weighted;bbc_E;vz",
-       n_bbc, min_bbc, max_bbc, n_vz, min_vz, max_vz);
-
-   Long64_t nentries = fChain->GetEntriesFast();
-   Long64_t nbytes = 0, nb = 0;
-   if (nevents != -1 && nevents < nentries) nentries = nevents;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      if ((jentry % 1000000) == 0) cout << " finished " << jentry/1000000 << "M entries" << endl;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-      if (vz > max_vz || vz < min_vz) continue;
-      if (ZDCx<7000 || ZDCx >24000) continue;
-      if (TMath::Abs(vz-vzVpd)>5) continue;
-
-      /* if (TMath::Abs(vz) > 10) continue; */
-      //find the weighting
-      int i_vz  = hg2->GetYaxis()->FindBin(vz);
-      int i_bbc = hg2->GetXaxis()->FindBin(bbc_E);
-      int i_standard = standard->GetXaxis()->FindBin(bbc_E);
-      double w = standard->GetBinContent(i_standard) / hg2->GetBinContent(i_bbc, i_vz) / rebin_factor;
-      /* if (hg2->GetBinContent(i_bbc, i_vz) > 1) cout <<    " SHOCK content:  " << hg2->GetBinContent(i_bbc, i_vz); */
-      /* if (jentry < 10){ */
-      /* cout << "------------"<<endl; */
-      /* cout <<    " standard: " << standard->GetBinContent(i_standard) << "  " << i_bbc << "  " << i_vz << endl; */
-      /* cout <<    " content:  " << hg2->GetBinContent(i_bbc, i_vz); */
-      /* cout <<    " weight:   " << w << endl; */
-      /* cout << "w: " << w << endl; */
-      /* } */
-
-      nEv_n->Fill(bbc_E, vz);
-      nEv_w->Fill(bbc_E, vz, w);
-
-      nch_n->Fill(bbc_E, vz, nch);
-      nch_w->Fill(bbc_E, vz, nch, w);
-
-      nchE_n->Fill(bbc_E, vz, nchE);
-      nchE_w->Fill(bbc_E, vz, nchE, w);
-
-      nchW_n->Fill(bbc_E, vz, nchW);
-      nchW_w->Fill(bbc_E, vz, nchW, w);
-
-      nchC_n->Fill(bbc_E, vz, nch_ltp5);
-      nchC_w->Fill(bbc_E, vz, nch_ltp5, w);
-
-      ntow_n->Fill(bbc_E, vz, ntow_gtp2);
-      ntow_w->Fill(bbc_E, vz, ntow_gtp2, w);
+            xz_o6yT->Fill(ZDCx,vz,nch_tof);
+            xz_o6nT->Fill(ZDCx,vz,no_tof);
+        }
    }
-
-   /* cout << "nbins :: :: :: " << nEv_n->GetXaxis()->GetNbins() << endl; */
-   /* cout << "nbins :: :: :: " << nEv_n->GetEntries() << endl; */
-   /* for (int i=0; i<n; ++i) cout << " low bound"<<i<<": " << nEv_n->GetXaxis()->GetBinLowEdge(i+1) */ 
-       /* << "  " << nEv_n->GetBinContent(i+1) << endl; */
-   /* nEv_n->Write(); */
-   fout->Write();
-   fout->Close();
-}
-void TreeRootsAnalysis::nch_in_deciles(){
-   /* if (fChain == 0) return; */
-   /* /1* cout << "a1" << endl; *1/ */
-
-   /* string deciles_list, deciles_root, which_hg; */
-   /* options >> deciles_root >> deciles_list >> which_hg; */
-
-   /* double* bounds = new double[11]; */
-   /* vector<double> v_bounds; */
-   /* int n = 10; */
-   
-   /* /1* cout << "a2" << endl; *1/ */
-   /* // read in deciles histograms */
-   /* // (this was generated in djs232/is2019/rcas/TreeRoots/mac on my pc) */
-   /* ifstream i_file; */
-   /* i_file.open(deciles_list.c_str()); */
-   /* /1* if (! i_file.is_open() ) cout << " aaargh! " << endl; *1/ */
-   /* string line; */
-   /* /1* cout << "a3" << endl; *1/ */
-   /* int i_lines = 0; */
-   /* /1* cout << "a4" << endl; *1/ */
-   /* while (getline(i_file, line)) { */
-   /*     /1* cout << "a5" << " " << line << endl; *1/ */
-   /*     istringstream iss (line); */
-   /*     /1* cout << "a6" << " " << iss.str() << endl; *1/ */
-   /*     double percentile, val, integral_bin, integral_sum; */
-   /*     iss >> percentile >> val >> integral_bin >> integral_sum; */
-   /*     bounds[i_lines] = val; */
-   /*     v_bounds.push_back(val); */
-   /*     i_lines += 1; */
-   /* } */
-   /* for (int i=0;i<11;++i) cout << " "<<i<<": " << bounds[i] << endl; */
-   /* /1* cout << "a7" << endl; *1/ */
-
-   /* fout = new TFile(o_file_name.c_str(),"RECREATE"); */
-   /* cout << "opening file " << o_file_name << endl; */
-   /* TH2D* hg2; */
-   /* TH1D* standard; */
-
-   /* TFile *f = new TFile(deciles_root.c_str(),"read"); */
-   /* f->GetObject("bbc_cenVz",standard); */
-   /* f->GetObject(which_hg.c_str(), hg2); */
-
-   /* /1* cout << " hg2 " << hg2->GetEntries() << " " << hg2 << endl; *1/ */
-
-
-   /* //make the new root file and output histograms */
-   /* fout->cd(); */
-
-   /* TH1D     *nEv_n = new TH1D("nEv_n","nEvents per decile no weighting",n, bounds); */
-   /* /1* cout << "nbins :: :: :: " << nEv_n->GetXaxis()->GetNbins() << endl; *1/ */
-   /* TH1D     *nEv_w = new TH1D("nEv_w","nEvents per decile weighted",    n, bounds); */
-
-   /* TProfile *nch_n = new TProfile("nch_n", "Nch |#eta|<1.0, no weighting",n,bounds); */
-   /* TProfile *nch_w = new TProfile("nch_w", "Nch |#eta|<1.0, weighted",n,bounds); */
-
-   /* TProfile *nchE_n = new TProfile("nchE_n", "Nch #eta<0, no weighting",n,bounds); */
-   /* TProfile *nchE_w = new TProfile("nchE_w", "Nch #eta<0, weighted",n,bounds); */
-
-   /* TProfile *nchW_n = new TProfile("nchW_n", "Nch #eta>0, no weighting",n,bounds); */
-   /* TProfile *nchW_w = new TProfile("nchW_w", "Nch #eta>0, weighted",n,bounds); */
-
-   /* TProfile *nchC_n = new TProfile("nchC_n", "Nch |#eta|<0.5, no weighting",n,bounds); */
-   /* TProfile *nchC_w = new TProfile("nchC_w", "Nch |#eta|<0.5, weighted",n,bounds); */
-
-   /* TProfile *ntow_n = new TProfile("ntow_n", "Number of towers with E_{T}>0.2N, no weighting",n,bounds); */
-   /* TProfile *ntow_w = new TProfile("ntow_w", "Number of towers with E_{T}>0.2N, weighted",    n,bounds); */
-
-   /* Long64_t nentries = fChain->GetEntriesFast(); */
-   /* Long64_t nbytes = 0, nb = 0; */
-   /* if (nevents != -1 && nevents < nentries) nentries = nevents; */
-   /* for (Long64_t jentry=0; jentry<nentries;jentry++) { */
-   /*    Long64_t ientry = LoadTree(jentry); */
-   /*    if (ientry < 0) break; */
-   /*    if ((jentry % 1000000) == 0) cout << " finished " << jentry/1000000 << "M entries" << endl; */
-   /*    nb = fChain->GetEntry(jentry);   nbytes += nb; */
-
-   /*    if (TMath::Abs(vz) > 10) continue; */
-
-   /*    //find the weighting */
-   /*    int i_vz  = hg2->GetYaxis()->FindBin(vz); */
-   /*    int i_bbc = hg2->GetXaxis()->FindBin(bbc_E); */
-   /*    double w = standard->GetBinContent(i_bbc) / hg2->GetBinContent(i_bbc, i_vz); */
-   /*    if (jentry < 10){ */
-   /*    cout << "------------"<<endl; */
-   /*    cout <<    " standard: " << standard->GetBinContent(i_bbc) << endl; */
-   /*    cout <<    " content:  " <<                 hg2->GetBinContent(i_bbc, i_vz); */
-   /*    cout <<    " weight:   " << w << endl; */
-   /*    cout << "w: " << w << endl; */
-   /*    } */
-
-   /*    nEv_n->Fill(bbc_E); */
-   /*    nEv_w->Fill(bbc_E, w); */
-
-   /*    nch_n->Fill(bbc_E, nch); */
-   /*    nch_w->Fill(bbc_E, nch, w); */
-
-   /*    nchE_n->Fill(bbc_E, nchE); */
-   /*    nchE_w->Fill(bbc_E, nchE, w); */
-
-   /*    nchW_n->Fill(bbc_E, nchW); */
-   /*    nchW_w->Fill(bbc_E, nchW, w); */
-
-   /*    nchC_n->Fill(bbc_E, nch_ltp5); */
-   /*    nchC_w->Fill(bbc_E, nch_ltp5, w); */
-
-   /*    ntow_n->Fill(bbc_E, ntow_gtp2); */
-   /*    ntow_w->Fill(bbc_E, ntow_gtp2, w); */
-   /* } */
-
-   /* cout << "nbins :: :: :: " << nEv_n->GetXaxis()->GetNbins() << endl; */
-   /* cout << "nbins :: :: :: " << nEv_n->GetEntries() << endl; */
-   /* for (int i=0; i<n; ++i) cout << " low bound"<<i<<": " << nEv_n->GetXaxis()->GetBinLowEdge(i+1) */ 
-   /*     << "  " << nEv_n->GetBinContent(i+1) << endl; */
-   /* /1* nEv_n->Write(); *1/ */
-   /* fout->Write(); */
-   /* fout->Close(); */
-}
-
-
-// updating for second round on 2019.05.21 for |vz-vzVpd|
-void TreeRootsAnalysis::bbcVz_slices(){
-   if (fChain == 0) return;
-   fout = new TFile(o_file_name.c_str(),"RECREATE");
-   double delta_vzVpd;
-   options >> delta_vzVpd;
-   bool use_delta_vzVpd = (delta_vzVpd != -1.);
-
-   TH2D       *hg2 = new TH2D("hg2", "bbc_E(vz) in one centimeter strips;bbc;Vz",500,0.,100000.,60,-30,30);
-   TProfile2D *pr2   = new TProfile2D("pr2", "bbcE(ZDCx,vZ);Vz;ZDCx",60,-30,30, 100,7000.,24000.);
-   TProfile2D *p_nch  = new TProfile2D("nch", "Nch |#eta|<1.0, no weighting;bbc_E;vz",500,0.,100000.,60,-30,30);
-   TProfile2D *p_nchE = new TProfile2D("nchE", "Nch #eta<0, no weighting;bbc_E;vz",500,0.,100000.,60,-30,30);
-   TProfile2D *p_nchW = new TProfile2D("nchW", "Nch #eta>0, no weighting;bbc_E;vz",500,0.,100000.,60,-30,30);
-   TProfile2D *p_nchC = new TProfile2D("nchC", "Nch |#eta|<0.5, no weighting;bbc_E;vz",500,0.,100000.,60,-30,30);
-   TProfile2D *p_ntow = new TProfile2D("ntow", "Number of towers with E_{T}>0.2N, no weighting;bbc_E;vz",500,0.,100000.,60,-30,30);
-
-   Long64_t nentries = fChain->GetEntriesFast();
-   Long64_t nbytes = 0, nb = 0;
-   if (nevents != -1 && nevents < nentries) nentries = nevents;
-   for (Long64_t jentry=0; jentry<nentries;jentry++) {
-      Long64_t ientry = LoadTree(jentry);
-      if (ientry < 0) break;
-      if ((jentry % 1000000) == 0) cout << " finished " << jentry/1000000 << "M entries" << endl;
-      nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-      if (use_delta_vzVpd) if (TMath::Abs(vz-vzVpd) > delta_vzVpd) continue;
-      hg2->Fill(bbc_E, vz);
-      pr2->Fill(vz,ZDCx,bbc_E);
-      p_nch->Fill(bbc_E,  vz, nch);
-      p_nchE->Fill(bbc_E, vz, nchE);
-      p_nchW->Fill(bbc_E, vz, nchW);
-      p_nchC->Fill(bbc_E, vz, nch_ltp5);
-      p_ntow->Fill(bbc_E, vz, ntow_gtp2);
-   }
-   fout->Write();
-   fout->Close();
+   f_out->Write();
+   f_out->Close();
 };
 
-// required options:
-// 1. number of entries required
-void TreeRootsAnalysis::Loop() { };
+void TreeRootsAnalysis::TH2_bbc_to_track(){
+    if (fChain == 0) return;
+   TFile* f_out = new TFile(o_file_name.c_str(),"RECREATE");
 
-void TreeRootsAnalysis::make_TProfile2D()
-{
-    // -------------------------------
-    //  input
-    // -------------------------------
-    // 0. input file name
-    // 1. output file name
-    // 2. nevents
-    // -------------------------------
-   if (fChain == 0) return;
+    TH2D* nch_bbcES = new TH2D("nch_bbcES",
+            "East Small |vz-vzVpd|<6, |vz|<10, ranking>0;bbcE_{#PMT<16};nch",200,0.,100000.,80,-0.5,79.5);
+    TH2D* nch_bbcE = new TH2D("nch_bbcE",
+            "East All |vz-vzVpd|<6, |vz|<10, ranking>0;bbcE_{#PMT<24};nch",200,0.,100000.,80,-0.5,79.5);
+    TH2D* nch_bbcWS = new TH2D("nch_bbcWS",
+            "West Small |vz-vzVpd|<6, |vz|<10, ranking>0;bbcW_{#PMT<16+24};nch",200,0.,100000.,80,-0.5,79.5);
+    TH2D* nch_bbcW = new TH2D("nch_bbcW",
+            "West All |vz-vzVpd|<6, |vz|<10, ranking>0;bbcW_{#PMT<24+24};nch",200,0.,100000.,80,-0.5,79.5);
+
+    TH2D* tof_bbcES = new TH2D("tof_bbcES",
+            "East Small |vz-vzVpd|<6, |vz|<10, ranking>0;bbcE_{#PMT<16};nch-TOF",200,0.,100000.,80,-0.5,79.5);
+    TH2D* tof_bbcE = new TH2D("tof_bbcE",
+            "East All |vz-vzVpd|<6, |vz|<10, ranking>0;bbcE_{#PMT<24};nch-TOF",200,0.,100000.,80,-0.5,79.5);
+    TH2D* tof_bbcWS = new TH2D("tof_bbcWS",
+            "West Small |vz-vzVpd|<6, |vz|<10, ranking>0;bbcW_{#PMT<16+24};nch-TOF",200,0.,100000.,80,-0.5,79.5);
+    TH2D* tof_bbcW = new TH2D("tof_bbcW",
+            "West All |vz-vzVpd|<6, |vz|<10, ranking>0;bbcW_{#PMT<24+24};nch-TOF",200,0.,100000.,80,-0.5,79.5);
+
+    TH2D* notof_bbcES = new TH2D("notof_bbcES",
+            "East Small |vz-vzVpd|<6, |vz|<10, ranking>0;bbcE_{#PMT<16};nch-noTOF",200,0.,100000.,80,-0.5,79.5);
+    TH2D* notof_bbcE = new TH2D("notof_bbcE",
+            "East All |vz-vzVpd|<6, |vz|<10, ranking>0;bbcE_{#PMT<24};nch-noTOF",200,0.,100000.,80,-0.5,79.5);
+    TH2D* notof_bbcWS = new TH2D("notof_bbcWS",
+            "West Small |vz-vzVpd|<6, |vz|<10, ranking>0;bbcW_{#PMT<16+24};nch-noTOF",200,0.,100000.,80,-0.5,79.5);
+    TH2D* notof_bbcW = new TH2D("notof_bbcW",
+            "West All |vz-vzVpd|<6, |vz|<10, ranking>0;bbcW_{#PMT<24+24};nch-noTOF",200,0.,100000.,80,-0.5,79.5);
+
    Long64_t nentries = fChain->GetEntriesFast();
-
-   /* Long64_t nevents; */
-   /* string nameout; */
-   /* options >> nevents >> nameout; */
-   if (nevents != -1 && nevents < nentries) nentries = nevents;
-
-   fout = new TFile(o_file_name.c_str(),"RECREATE");
-
-   TProfile2D *p2All_e = new TProfile2D("p2All_e","BBC with error vs. Vz and ZDCx;vz;ZDCx",   120,-30,30,120,0,35000,"e");
-   TProfile2D *p2All_s = new TProfile2D("p2All_s","BBC with err=std vs. Vz and ZDCx;vz;ZDCx", 120,-30,30,120,0,35000,"s");
-
-   TProfile2D *p2Sub_e = new TProfile2D("p2sub_e","BBC with error vs. Vz and ZDCx;vz;ZDCx",   120,-30,30,120,0,35000,"e");
-   TProfile2D *p2Sub_s = new TProfile2D("p2sub_s","BBC with err=std vs. Vz and ZDCx;vz;ZDCx", 120,-30,30,120,0,35000,"s");
-
-   TProfile   *pAll_e = new TProfile("pAll_e","BBC with error   vz. Vz, all events", 120,-30,30,"e");
-   TProfile   *pAll_s = new TProfile("pAll_s","BBC with err=std vz. Vz, all events", 120,-30,30,"s");
-
-   TProfile   *pSub_e = new TProfile("psub_e","BBC with error   vz. Vz, Vz-Vpd<6 events", 120,-30,30,"e");
-   TProfile   *pSub_s = new TProfile("psub_s","BBC with err=std vz. Vz, Vz-Vpd<6 events", 120,-30,30,"s");
-
-   TH1D* bbc_dist = new TH1D("bbc_dist",";bbc;N_{events}",100000,0,98000.);
-   TH1D* c_bbc_dist = new TH1D("c_bbc_dist",";bbc;N_{events}",100000,0,98000.);
-
-   cout << " Starting on " << (double)nentries/1000000 <<"M  entries" << endl;
    Long64_t nbytes = 0, nb = 0;
+   if (nevents != -1 && nevents < nentries) nentries = nevents;
+   cout << "nentries " << nentries/1000000 << "M" << endl;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
-      if ((jentry % 1000000) == 0) cout << " finished " << jentry/1000000 << "M entries" << endl;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
+      if ( ranking <= 0 || ZDCx<7000. || ZDCx>24000. || !is_vz_vzVpd || TMath::Abs(vz)<10) continue;
+        nch_bbcES->Fill(bbcES,nch);
+        nch_bbcE->Fill(bbcE,nch);
+        nch_bbcWS->Fill(bbcWS,nch);
+        nch_bbcW->Fill(bbcW,nch);
 
-      p2All_e->Fill(vz, ZDCx, bbc_E);
-      p2All_s->Fill(vz, ZDCx, bbc_E);
+        tof_bbcES->Fill(bbcES,nch_tof);
+        tof_bbcE->Fill(bbcE,nch_tof);
+        tof_bbcWS->Fill(bbcWS,nch_tof);
+        tof_bbcW->Fill(bbcW,nch_tof);
 
-      pAll_e->Fill(vz,bbc_E);
-      pAll_s->Fill(vz,bbc_E);
-
-      if (TMath::Abs(vz - vzVpd) < 6) {
-          p2Sub_e->Fill(vz, ZDCx, bbc_E);
-          p2Sub_s->Fill(vz, ZDCx, bbc_E);
-          pSub_e->Fill(vz,bbc_E);
-          pSub_s->Fill(vz,bbc_E);
-
-          double c_bbc =  bbc_E-8.699*vz-0.4383*vz*vz-0.6851*ZDCx+1.161e-5*ZDCx*ZDCx-0.003482*ZDCx*vz;
-          bbc_dist->Fill(bbc_E);
-          c_bbc_dist->Fill(c_bbc);
-      }
-
+        int notof = nch - nch_tof;
+        notof_bbcES->Fill(bbcES,notof);
+        notof_bbcE->Fill(bbcE,notof);
+        notof_bbcWS->Fill(bbcWS,notof);
+        notof_bbcW->Fill(bbcW,notof);
    }
-   fout->Write();
-   fout->Close();
+   f_out->Write();
+   f_out->Close();
 }
-void TreeRootsAnalysis::make_Deciles(){
-   if (fChain == 0) return;
+void TreeRootsAnalysis::TOF_dist(){
+    if (fChain == 0) return;
+   TFile* f_out = new TFile(o_file_name.c_str(),"RECREATE");
 
-   // options:
-   // 0. TFile in
-   // 1. nevents
-   // 2. TFile out name
-   // 3. file with corrections
-   // 3. file quantiles ratios in
-   // 4. file quantiles calculated out
-   /* Long64_t nevents; */
-   string  fileout_name;
-   string p_file;
-   string file_quant_in;
-   string file_quant_out;
-
-   /* options >> nevents >> fileout_name >> file_quant_in >> file_quant_out; */
-   fout = new TFile(o_file_name.c_str(),"RECREATE");
-
-   //----- read in the correction parameters
-
-   //----- read the quant_in_file
-   double xq[50]; // max array size (probably use ten)
-   double yq[50];
-    int nq = 0;
-    //TODO remove this junk line that just keeps warnings down for now...
-    if (false) cout << " this is xq and yq " << xq << " " << yq << endl;
-
-    string line;
-    ifstream i_file;
-    i_file.open(file_quant_in.c_str());
-    while (getline(i_file, line)){
-        istringstream iss (line);
-        double val;
-        iss >> val;
-        xq[nq] = val;
-        ++nq;
-    }
-    i_file.close();
-
-    // read the p_file
-    double p[6];
-    i_file.open(p_file.c_str());
-    int i_p;
-    while (getline(i_file,line)) {
-        istringstream iss (line);
-        double val;
-        iss >> val;
-        p[i_p++] = val;
-    };
-
-    TH1D *h_quant = new TH1D("h_quant","BBC signal for quantiles;BBC;Number", 30000, -100000., 200000.);
-    TH1D *h_quant_corr = new TH1D("h_quant_corr","BBC signal for quantiles;BBC;Number", 30000, -100000., 200000.);
+    TH1D* tof   = new TH1D("tof","N_{tof};N_{tof};N_{events}",50,-0.5,49.5);
+    TH1D* notof = new TH1D("no_tof","N_{tof};N_{tof};N_{events}",50,-0.5,49.5);
+    TH2D* bbc_swing = new TH2D("bbc_swing","bbc correction swing;bbc_{raw};bbc_{corrected}",
+            500,0.,110000.,500,0.,110000.);
+    TProfile2D* tof_ZDCx = new TProfile2D("tofnch_zdcX",
+            "nch_{TOF} in bins of vz-vzvpd;vz-vpd;ZDCx",48,-6.,6.,40,7000.,24000.);
 
    Long64_t nentries = fChain->GetEntriesFast();
    Long64_t nbytes = 0, nb = 0;
    if (nevents != -1 && nevents < nentries) nentries = nevents;
+   cout << "nentries " << nentries/1000000 << "M" << endl;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       Long64_t ientry = LoadTree(jentry);
       if (ientry < 0) break;
-      if ((jentry % 1000000) == 0) cout << " finished " << jentry/1000000 << "M entries" << endl;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
+      if ( ranking <= 0) continue;
+      if (ZDCx<7000 || ZDCx > 24000) continue;
+      if (!is_vz_vzVpd) continue;
+      if (TMath::Abs(vz) > 0) continue;
 
-      h_quant->Fill(bbc_E);
-      h_quant_corr->Fill(bbc_E -p[1]*vz   -p[2]*vz*vz
-                               -p[3]*ZDCx -p[4]*ZDCx*ZDCx
-                               -p[5]*vz*ZDCx);
+      tof->Fill(nch_tof);
+      notof->Fill(nch-nch_tof);
+      bbc_swing->Fill(bbcE, correct_bbc());
+      tof_ZDCx->Fill(vz-vzVpd, ZDCx, nch_tof);
+
+
       // if (Cut(ientry) < 0) continue;
    }
-   fout->Write();
-   fout->Close();
-};
+   f_out->Write();
+   f_out->Close();
+}
 
+void TreeRootsAnalysis::Loop() { };
+// a backup of the old sets are in arch/_x.bkup and arch/_h.bkup
 TreeRootsAnalysis::TreeRootsAnalysis(const char* _myoptions) : options(_myoptions) {
     string infile;
+    // ---------------------------------------------------------------
+    // get first three options
+    // ---------------------------------------------------------------
     string which_program;
     options >> which_program >> infile >> o_file_name >> nevents; 
     TFile *f = new TFile(infile.c_str(), "read");
@@ -559,41 +389,38 @@ TreeRootsAnalysis::TreeRootsAnalysis(const char* _myoptions) : options(_myoption
     f->GetObject("events",tree);
     Init(tree);
 
-    // get the outfile name and number of events and run the analysis
-    if (which_program == "make_TProfile2D") {
+    // ---------------------------------------------------------------
+    // select and run program
+    // ---------------------------------------------------------------
+    if (which_program == "nch_TProfile2D") {
         cout << "Running make_TProfile2D"<<endl;
-        make_TProfile2D(); 
-    } else if (which_program == "bbcVz_slices") {
-        cout << "Running bbcVz_slices" << endl;
-        bbcVz_slices(); 
-    } else if (which_program == "nch_in_deciles") {
-        cout << "Running nch_in_deciles" << endl;
-        nch_in_deciles();
-    } else if (which_program == "normAcceptanceTo004") {
-        cout << "Running normAcceptanceTo004" << endl;
-        normAcceptanceTo004();
-    } else if (which_program == "Deciles") {
-        cout << "Deciles" << endl;
-        Deciles();
+        nch_TProfile2D(); 
+    } else if ( which_program == "LumiProfiles") {
+        cout << "Running " << which_program << endl;
+        LumiProfiles(); 
+    } else if ( which_program == "BBC_dist") {
+        cout << "Running " << which_program << endl;
+        BBC_dist(); 
+    } else if ( which_program == "Nch") {
+        cout << "Running " << which_program << endl;
+        Nch(); 
+    } else if ( which_program == "nch_gt4GeV_TProfile2D") {
+        cout << "Running " << which_program << endl;
+        nch_gt4GeV_TProfile2D(); 
+    } else if ( which_program == "TOF_dist") {
+        cout << "Running " << which_program << endl;
+        TOF_dist(); 
+    } else if ( which_program == "TH2_bbc_to_track") {
+        cout << "Running " << which_program << endl;
+        TH2_bbc_to_track(); 
     } else {
-        cout << "analysis option not recognized, not running." << endl;
+        cout << "analysis option not recognized; -> no analysis run!" << endl;
     }
 };
-/* TreeRootsAnalysis::TreeRootsAnalysis(const char* _fin, const char* _fout, Long64_t _nevents) : nameout(_fout), fChain(0), nevents(_nevents) { */
-/*     TFile *f = new TFile(_fin, "read"); */
-/*     if (!f) { cout << " fatal error, couldn't read TFile\""<<_fin<<"\"." << endl; */
-/*               exit(2); */
-/*     }; */
-/*     TTree* tree; */
-/*     f->GetObject("events",tree); */
-/*     Init(tree); */
-/* }; */
 TreeRootsAnalysis::~TreeRootsAnalysis()
 {
    if (!fChain) return;
    delete fChain->GetCurrentFile();
-   /* fout->Write(); */
-   /* fout->Close(); */
 }
 
 Int_t TreeRootsAnalysis::GetEntry(Long64_t entry)
@@ -634,8 +461,13 @@ void TreeRootsAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("fUniqueID", &fUniqueID, &b_event_fUniqueID);
    fChain->SetBranchAddress("fBits", &fBits, &b_event_fBits);
    fChain->SetBranchAddress("runId", &runId, &b_event_runId);
+   fChain->SetBranchAddress("ranking", &ranking, &b_event_ranking);
    fChain->SetBranchAddress("vz", &vz, &b_event_vz);
    fChain->SetBranchAddress("vzVpd", &vzVpd, &b_event_vzVpd);
+   fChain->SetBranchAddress("nVpdHitsEast", &nVpdHitsEast, &b_event_nVpdHitsEast);
+   fChain->SetBranchAddress("nVpdHitsWest", &nVpdHitsWest, &b_event_nVpdHitsWest);
+   fChain->SetBranchAddress("is_vz_vzVpd", &is_vz_vzVpd, &b_event_is_vz_vzVpd);
+   fChain->SetBranchAddress("nch_tof", &nch_tof, &b_event_nch_tof);
    fChain->SetBranchAddress("nch", &nch, &b_event_nch);
    fChain->SetBranchAddress("nchE", &nchE, &b_event_nchE);
    fChain->SetBranchAddress("nchW", &nchW, &b_event_nchW);
@@ -646,12 +478,12 @@ void TreeRootsAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("ntow_gt4", &ntow_gt4, &b_event_ntow_gt4);
    fChain->SetBranchAddress("ntow_gt4_E", &ntow_gt4_E, &b_event_ntow_gt4_E);
    fChain->SetBranchAddress("ntow_gt4_W", &ntow_gt4_W, &b_event_ntow_gt4_W);
-   fChain->SetBranchAddress("bbc_E", &bbc_E, &b_event_bbc_E);
-   fChain->SetBranchAddress("bbc_ES", &bbc_ES, &b_event_bbc_ES);
-   fChain->SetBranchAddress("bbc_EL", &bbc_EL, &b_event_bbc_EL);
-   fChain->SetBranchAddress("bbc_W", &bbc_W, &b_event_bbc_W);
-   fChain->SetBranchAddress("bbc_WS", &bbc_WS, &b_event_bbc_WS);
-   fChain->SetBranchAddress("bbc_WL", &bbc_WL, &b_event_bbc_WL);
+   fChain->SetBranchAddress("bbcE", &bbcE, &b_event_bbcE);
+   fChain->SetBranchAddress("bbcES", &bbcES, &b_event_bbcES);
+   fChain->SetBranchAddress("bbcEL", &bbcEL, &b_event_bbcEL);
+   fChain->SetBranchAddress("bbcW", &bbcW, &b_event_bbcW);
+   fChain->SetBranchAddress("bbcWS", &bbcWS, &b_event_bbcWS);
+   fChain->SetBranchAddress("bbcWL", &bbcWL, &b_event_bbcWL);
    fChain->SetBranchAddress("ZDCx", &ZDCx, &b_event_ZDCx);
    fChain->SetBranchAddress("ZdcEastRate", &ZdcEastRate, &b_event_ZdcEastRate);
    fChain->SetBranchAddress("ZdcWestRate", &ZdcWestRate, &b_event_ZdcWestRate);
