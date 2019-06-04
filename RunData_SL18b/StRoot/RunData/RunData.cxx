@@ -14,8 +14,17 @@
 
 #define  MaxNTracks 150
 #define  MaxNTowers 50
-
 using namespace fastjet;
+
+struct MyInfoTracks : public PseudoJet::UserInfoBase {
+    MyInfoTracks(bool in_isTOF, bool in_isBEMC) 
+        : _isTOF{in_isTOF}, _isBEMC{in_isBEMC} {};
+    bool isTOF() const  { return _isTOF; };
+    bool isBEMC() const { return _isBEMC; };
+    bool _isTOF;
+    bool _isBEMC;
+};
+
 
 ClassImp(RunData)
 //-----------------------------------------------------------------------------
@@ -36,11 +45,10 @@ RunData::RunData(
     starDb          {_starDb},
     bemcGeom        { StEmcGeom::getEmcGeom("bemc") },
     triggerId       { _triggerId },
-    b_tracks        { "EPhiEta", MaxNTracks },
-    b_towers        { "EPhiEta", MaxNTowers  }
+    b_tracks        { "myTrack", MaxNTracks },
+    b_towers        { "myTower", MaxNTowers  }
 {
     bemc = new StBemcTables();
-    /* cout << " |starDb|  " << starDb << endl; */
     
     // read in the bad run and bad tower lists
     log << "Reading in the bad run list" << endl;
@@ -143,8 +151,7 @@ Int_t RunData::Make() {
     b_towers.Clear();
 
     fevent.runId = picoEvent->runId() ;
-
-    fevent.zdcX = picoEvent->ZDCx();
+    fevent.ZDCx = picoEvent->ZDCx();
 
     // cut on bad_run_list
     if (std::find(bad_run_list.begin(), bad_run_list.end(), fevent.runId)
@@ -153,6 +160,11 @@ Int_t RunData::Make() {
     // cut on vz
     fevent.vz = picoEvent->primaryVertex().z();
     fevent.vzVpd = picoEvent->vzVpd();
+
+    fevent.b_rank = (picoEvent->ranking() > 0);
+    fevent.b_vz10 = (TMath::Abs(fevent.vz)<10);
+    fevent.b_vzVpd6 = TMath::Abs(fevent.vz-fevent.vzVpd) < 6;
+    fevent.b_all = (fevent.b_rank && fevent.b_vz10 && fevent.b_vzVpd6);
     /* if (TMath::Abs(fevent.vz) > 10) return kStOK; */
 
     // eventually cut on the vz-vpd, but not for now...
@@ -162,6 +174,9 @@ Int_t RunData::Make() {
 
     vector<PseudoJet> particles;
     /* int nch{0}; */
+    fevent.nch = 0;
+    fevent.n_isTOF  = 0;
+    fevent.n_isBEMC = 0;
     for (unsigned int i = 0; i < picoDst->numberOfTracks(); ++i) {
         StPicoTrack* track = picoDst->track(i);
         if (!track || !(track->isPrimary()))   continue;
@@ -179,8 +194,7 @@ Int_t RunData::Make() {
         if (TMath::Abs(eta)  >= 1.0) continue;
         float nhit_ratio = ((float)track->nHitsFit()) / (float)track->nHitsMax();
         if (nhit_ratio <= 0.52) continue;
-        if (track->bTofPidTraitsIndex() != -1) continue;
-
+        /* if (track->bTofPidTraitsIndex() != -1) continue; */
         /* double pt {Ptrack.Perp() }; */
         double pt {Ptrack.perp() };
         if (pt > 30.)  return kStOK;
@@ -189,17 +203,23 @@ Int_t RunData::Make() {
         particles.push_back (PseudoJet());
         unsigned int j = particles.size() - 1;
         particles[j].reset_PtYPhiM(pt, eta, phi);
+
+
+        bool tofmatch  = (track->bTofPidTraitsIndex() != -1);
+        bool bemcmatch = (track->bemcPidTraitsIndex() != -1);
+        particles[j].set_user_info( new MyInfoTracks( tofmatch, bemcmatch) );
+        if (tofmatch)  ++fevent.n_isTOF;
+        if (bemcmatch) ++fevent.n_isBEMC;
+        ++fevent.nch;
     }
 
     //loop through all good towers and get the hits with Et > 4
     const int detector{1};
-
-    // use fastjet for both charged and nuetral hits
     
     vector<PseudoJet> towers;
     bemc->loadTables(starDb);
-    /* for (int i_tower = 1; i_tower < 4801; ++i_tower){ */
-    for (int i_tower = 1; i_tower < 101; ++i_tower){
+    for (int i_tower = 1; i_tower < 4801; ++i_tower){
+    /* for (int i_tower = 1; i_tower < 101; ++i_tower){ */
         if (std::find(bad_tower_list.begin(), 
                       bad_tower_list.end(),i_tower) != bad_tower_list.end())
         { continue; }
@@ -212,7 +232,6 @@ Int_t RunData::Make() {
          ) {
             StPicoBTowHit* bTowHit = picoDst->btowHit(i_tower-1); 
             if (!bTowHit) { 
-                cout << " NO BTOWHIT " <<  i_tower << endl;
                 continue;
             }
 
@@ -231,7 +250,6 @@ Int_t RunData::Make() {
             double calib { bemc->calib(detector,     i_tower) };
             double eta  { towLoc.pseudoRapidity() };
             double Et { (bTowHit->adc() - ped)*calib/TMath::CosH(eta)} ;
-            /* cout << "ped(" << i_tower <<") " << ped << " eta: " << eta << "  calib: " << calib << " Et: " << Et << endl; */
             if (Et > 4.) {
                 towers.push_back (PseudoJet());
                 double phi  { towLoc.phi() };
@@ -246,47 +264,28 @@ Int_t RunData::Make() {
     particles = sorted_by_pt(particles);
     towers    = sorted_by_pt(towers);
 
-    /* cout << " a0 " << particles.size() << " " << MaxNTracks << " " << towers.size() << " " << MaxNTowers << endl; */
-
     /* fevent.nch = particles.size(); */
-    /* cout << " a1 " << fevent.nch << " " << MaxNTracks << " " << towers.size() << " " << MaxNTowers << endl; */
     unsigned int nrec = (particles.size() > MaxNTracks) ? MaxNTracks : particles.size();
-    /* cout << " a2 " << nrec << endl; */
     for (unsigned int i{0}; i<nrec; ++i){
-        /* cout << " a3 " << i << endl; */
-        EPhiEta* track = (EPhiEta*) b_tracks.ConstructedAt(i);
-        track->E = particles[i].pt();
+        myTrack* track = (myTrack*) b_tracks.ConstructedAt(i);
+        track->pt = particles[i].pt();
         track->phi = particles[i].phi();
         track->eta = particles[i].eta();
+        track->isTOF  = particles[i].user_info<MyInfoTracks>().isTOF();
+        track->isBEMC = particles[i].user_info<MyInfoTracks>().isBEMC();
     }
 
     /* fevent.ntow = towers.size(); */
     nrec = (towers.size() > MaxNTowers) ? MaxNTowers : towers.size();
     for (unsigned int i{0}; i<nrec; ++i){
-        /* cout << " a4 " << i << endl; */
-        EPhiEta* tower = (EPhiEta*) b_towers.ConstructedAt(i);
-        tower->E   = towers[i].pt();
+        myTower* tower = (myTower*) b_towers.ConstructedAt(i);
+        tower->Et  = towers[i].Et();
         tower->phi = towers[i].phi();
         tower->eta = towers[i].eta();
     }
 
     fevent.bbcES = 0;
-    for (int i = 1; i < 16; ++i) fevent.bbcES += picoEvent->bbcAdcEast(i);
-
-    /* // use the overall average */
-    /* if (p0.count(fevent.runId) == 0) { */
-    /*     fevent.has_corr = false; */
-    /*     fevent.bbcES_corr = fevent.bbcES */ 
-    /*                         - p1_arb * fevent.vz */
-    /*                         - p2_arb * fevent.vz * fevent.vz; */
-
-    /* } else { */
-    /*     fevent.has_corr = true; */
-    /*     fevent.bbcES_corr = fevent.bbcES */ 
-    /*                         - p0[fevent.runId] + p0_arb */ 
-    /*                         - p1[fevent.runId] * fevent.vz */
-    /*                         - p2[fevent.runId] * fevent.vz * fevent.vz; */
-    /* } */
+    for (int i = 0; i < 16; ++i) fevent.bbcES += picoEvent->bbcAdcEast(i);
 
     fevent.bbcE = fevent.bbcES;
     for (int i = 16; i < 24; ++i) fevent.bbcE += picoEvent->bbcAdcEast(i);

@@ -7,14 +7,17 @@ struct TreeEvent : public TObject {
 	virtual ~TreeEvent() {} ;
 
     int          runId;      
+    bool         b_rank; // true for > 0 neg for < 0
+    bool         b_vz10; // is |vz|<10
+    bool         b_vzVpd6; // is |vz-vpdvz|<6
+    bool         b_all; // b_rank && b_vz10 && b_vzVpd6
     float        vz;
     float        vzVpd;
 
-    int          nVpdHitsEast;
-    int          nVpdHitsWest;
+    int         nVpdHitsEast;
+    int         nVpdHitsWest;
 
-    /* int          eventId; */
-    /* int          i_file_name; */
+    int         nch_tof; 
     int         nch;  // 
     int         nchE;  // 
     int         nchW;  // 
@@ -29,13 +32,13 @@ struct TreeEvent : public TObject {
     int         ntow_gt4_W;  // ditto for west
 
 
-    float       bbc_E;
-    float       bbc_ES;
-    float       bbc_EL;
+    float       bbcE;
+    float       bbcES;
+    float       bbcEL;
 
-    float       bbc_W;
-    float       bbc_WS;
-    float       bbc_WL;
+    float       bbcW;
+    float       bbcWS;
+    float       bbcWL;
 
     float       ZDCx;
     float       ZdcEastRate;

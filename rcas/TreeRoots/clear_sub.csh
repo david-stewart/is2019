@@ -1,3 +1,3 @@
 #!/bin/tcsh
-rm -rf sched* *session.xml sums/err/* sums/input/* sums/out/*
+rm *session.xml sums/err/* sums/out/* sums/input/*
 

@@ -20,7 +20,7 @@ using namespace std;
 class TreeRootsAnalysis {
 public :
    Int_t           fCurrent; //!current Tree number in a TChain
-   TFile          *fout; //!current Tree number in a TChain
+   /* TFile          *f_out; //!current Tree number in a TChain */
    istringstream   options;
    /* const char*    nameout; */
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
@@ -32,8 +32,13 @@ public :
    UInt_t          fUniqueID;
    UInt_t          fBits;
    Int_t           runId;
+   Float_t         ranking;
    Float_t         vz;
    Float_t         vzVpd;
+   Int_t           nVpdHitsEast;
+   Int_t           nVpdHitsWest;
+   Bool_t          is_vz_vzVpd;
+   Int_t           nch_tof;
    Int_t           nch;
    Int_t           nchE;
    Int_t           nchW;
@@ -44,12 +49,12 @@ public :
    Int_t           ntow_gt4;
    Int_t           ntow_gt4_E;
    Int_t           ntow_gt4_W;
-   Float_t         bbc_E;
-   Float_t         bbc_ES;
-   Float_t         bbc_EL;
-   Float_t         bbc_W;
-   Float_t         bbc_WS;
-   Float_t         bbc_WL;
+   Float_t         bbcE;
+   Float_t         bbcES;
+   Float_t         bbcEL;
+   Float_t         bbcW;
+   Float_t         bbcWS;
+   Float_t         bbcWL;
    Float_t         ZDCx;
    Float_t         ZdcEastRate;
    Float_t         ZdcWestRate;
@@ -60,8 +65,13 @@ public :
    TBranch        *b_event_fUniqueID;   //!
    TBranch        *b_event_fBits;   //!
    TBranch        *b_event_runId;   //!
+   TBranch        *b_event_ranking;   //!
    TBranch        *b_event_vz;   //!
    TBranch        *b_event_vzVpd;   //!
+   TBranch        *b_event_nVpdHitsEast;   //!
+   TBranch        *b_event_nVpdHitsWest;   //!
+   TBranch        *b_event_is_vz_vzVpd;   //!
+   TBranch        *b_event_nch_tof;   //!
    TBranch        *b_event_nch;   //!
    TBranch        *b_event_nchE;   //!
    TBranch        *b_event_nchW;   //!
@@ -72,12 +82,12 @@ public :
    TBranch        *b_event_ntow_gt4;   //!
    TBranch        *b_event_ntow_gt4_E;   //!
    TBranch        *b_event_ntow_gt4_W;   //!
-   TBranch        *b_event_bbc_E;   //!
-   TBranch        *b_event_bbc_ES;   //!
-   TBranch        *b_event_bbc_EL;   //!
-   TBranch        *b_event_bbc_W;   //!
-   TBranch        *b_event_bbc_WS;   //!
-   TBranch        *b_event_bbc_WL;   //!
+   TBranch        *b_event_bbcE;   //!
+   TBranch        *b_event_bbcES;   //!
+   TBranch        *b_event_bbcEL;   //!
+   TBranch        *b_event_bbcW;   //!
+   TBranch        *b_event_bbcWS;   //!
+   TBranch        *b_event_bbcWL;   //!
    TBranch        *b_event_ZDCx;   //!
    TBranch        *b_event_ZdcEastRate;   //!
    TBranch        *b_event_ZdcWestRate;   //!
@@ -93,24 +103,34 @@ public :
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
    virtual void     Loop();
-   virtual void     normAcceptanceTo004();
-   virtual void     Deciles();
-   void             nch_in_deciles();
 
    //------------------------------
    // make_TProfile2D:
-   // required input:
-   // 1. Location of input file
-   // 2. number of entries to run
-   // 3. name of output file
+   //   - TProfile2D bbc(ZDCx, vz) 
+   //   - TProfile2D bbc
    //------------------------------
-   void             make_TProfile2D();
-   void             make_Deciles();
-   virtual void     bbcVz_slices();
+   void             nch_TProfile2D();
+   void             LumiProfiles();
+   void             BBC_dist();
+   void             Nch();
+   void             nch_gt4GeV_TProfile2D();
+   void             TOF_dist();
+   void             TH2_bbc_to_track();
    //------------------------------
    
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+
+    static const double p_offset;
+    static const double p0;
+    static const double p1;
+    static const double p2;
+    static const double p3;
+    static const double p4;
+    static const double p5;
+
+    double correct_bbc();
+
    ClassDef(TreeRootsAnalysis,1)
 };
 

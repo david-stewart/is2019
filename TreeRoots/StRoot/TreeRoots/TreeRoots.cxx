@@ -32,7 +32,7 @@ TreeRoots::TreeRoots(
     picoDstMaker    {_picoMaker},
     starDb          {_starDb},
     bemcGeom        { StEmcGeom::getEmcGeom("bemc") },
-    triggerId         {_triggerId}
+    triggerId       {_triggerId}
 {
     bemc = new StBemcTables();
     
@@ -123,43 +123,42 @@ void TreeRoots::Clear(Option_t *opt) { };
 
 //----------------------------------------------------------------------------- 
 Int_t TreeRoots::Make() {
-    /* cout << " a0 " << endl; */
-
     if(!picoDstMaker) {
         log << " No PicoDstMaker! Skip! " << endm;
         return kStWarn;
     }
-
     StPicoDst* picoDst = picoDstMaker->picoDst();
     if(!picoDst) {
         log << " No PicoDst! Skip! " << endl;
         return kStWarn;
     }
 
-    /* cout << " a1 " << endl; */
     StPicoEvent* picoEvent = picoDst->event();
-
     if (!picoEvent->isTrigger(triggerId)) return kStOk;
 
     fevent.runId = picoEvent->runId() ;
+    fevent.b_rank = (picoEvent->ranking() > 0);
     fevent.ZDCx = picoEvent->ZDCx();
 
     // cut on bad_run_list
     if (std::find(bad_run_list.begin(), bad_run_list.end(), fevent.runId)
             != bad_run_list.end()) return kStOK;
 
-    /* cout << " a2 " << endl; */
     // cut on vz
     fevent.vz = picoEvent->primaryVertex().z();
 
     fevent.vzVpd = picoEvent->vzVpd();
+
+    fevent.b_vz10   = TMath::Abs(fevent.vz) < 10;
+    fevent.b_vzVpd6 = TMath::Abs(fevent.vz-fevent.vzVpd) < 6;
+    fevent.b_all = (fevent.b_rank && fevent.b_vz10 && fevent.b_vzVpd6);
+
     fevent.nVpdHitsEast = picoEvent->nVpdHitsEast();
     fevent.nVpdHitsWest = picoEvent->nVpdHitsWest();
 
 
-    if (TMath::Abs(fevent.vz) > 10) return kStOK;
-    if (TMath::Abs(fevent.vz - fevent.vzVpd) > 6.) return kStOK;
-
+    /* if (TMath::Abs(fevent.vz) > 10) return kStOK; */
+    fevent.nch_tof = 0;
     fevent.nch = 0;
     fevent.nchE = 0;
     fevent.nchW = 0;
@@ -177,13 +176,13 @@ Int_t TreeRoots::Make() {
         if (TMath::Abs(eta)  >= 1.0) continue;
         float nhit_ratio = ((float)track->nHitsFit()) / (float)track->nHitsMax();
         if (nhit_ratio <= 0.52) continue;
-        if (track->bTofPidTraitsIndex() != -1) continue;
 
         double pt {Ptrack.Perp() };
         if (pt > 30.)  return kStOK;
         if (pt < 0.2) continue;
 
         ++fevent.nch;
+        if (track->isTofTrack()) ++fevent.nch_tof;
         if (eta < 0) { ++fevent.nchE; }
         else         { ++fevent.nchW; }
         if (TMath::Abs(eta) < 0.5) ++fevent.nch_ltp5;
@@ -203,13 +202,10 @@ Int_t TreeRoots::Make() {
     
     /* vector<PseudoJet> towers; */
     bemc->loadTables(starDb);
-    /* cout << " z0 " << endl; */
     for (int i_tower = 1; i_tower < 4801; ++i_tower){
-        /* cout << " z1 " << i_tower <<  endl; */
         if (std::find(bad_tower_list.begin(), 
                       bad_tower_list.end(),i_tower) != bad_tower_list.end())
         { continue; }
-        /* cout << " z2 " << i_tower <<  endl; */
 
         if ( 
             bemc->status(detector, i_tower)             == 1
@@ -234,9 +230,6 @@ Int_t TreeRoots::Make() {
             /* double phi  { relPos.Phi() }; */
             double calib { bemc->calib(detector,     i_tower) };
             double Et { (bTowHit->adc() - ped)*calib/TMath::CosH(eta)} ;
-            /* cout << " Et("<<i_tower<<": " << Et << endl; */
-            /* cout << "ped(" << i_tower <<") " << ped << " eta: " << eta << "  calib: " << calib << " Et: " << Et << endl; */
-            /* if (Et > 0) cout << " Et("<<i_tower<<": " << Et << endl; */
             if (Et > 0.2) {
                 ++fevent.ntow_gtp2;
                 if (eta < 0) { ++fevent.ntow_gtp2_E; }
@@ -251,21 +244,21 @@ Int_t TreeRoots::Make() {
         }
     }
 
-    fevent.bbc_E  = 0;
-    fevent.bbc_ES = 0;
-    fevent.bbc_EL = 0;
+    fevent.bbcE  = 0;
+    fevent.bbcES = 0;
+    fevent.bbcEL = 0;
 
-    fevent.bbc_W  = 0;
-    fevent.bbc_WS = 0;
-    fevent.bbc_WL = 0;
+    fevent.bbcW  = 0;
+    fevent.bbcWS = 0;
+    fevent.bbcWL = 0;
     
-    for (int i = 1; i < 16; ++i)  fevent.bbc_ES += picoEvent->bbcAdcEast(i);
-    for (int i = 16; i < 24; ++i) fevent.bbc_EL += picoEvent->bbcAdcEast(i);
-    fevent.bbc_E = fevent.bbc_ES + fevent.bbc_EL;
+    for (int i = 0; i < 16; ++i)  fevent.bbcES += picoEvent->bbcAdcEast(i);
+    for (int i = 16; i < 24; ++i) fevent.bbcEL += picoEvent->bbcAdcEast(i);
+    fevent.bbcE = fevent.bbcES + fevent.bbcEL;
 
-    for (int i = 1; i < 16; ++i)  fevent.bbc_WS += picoEvent->bbcAdcWest(i);
-    for (int i = 16; i < 24; ++i) fevent.bbc_WL += picoEvent->bbcAdcWest(i);
-    fevent.bbc_W = fevent.bbc_WS + fevent.bbc_WL;
+    for (int i = 0; i < 16; ++i)  fevent.bbcWS += picoEvent->bbcAdcWest(i);
+    for (int i = 16; i < 24; ++i) fevent.bbcWL += picoEvent->bbcAdcWest(i);
+    fevent.bbcW = fevent.bbcWS + fevent.bbcWL;
 
     fevent.ZDCx = picoEvent->ZDCx();
     fevent.ZdcEastRate = picoEvent->zdcEastRate();

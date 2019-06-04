@@ -13,7 +13,7 @@
 	</command>
     <stdout URL="file:./sums/out/$JOBID" />	
     <stderr URL="file:./sums/err/$JOBID" />
-    <output fromScratch="*.log"  toURL="file:/gpfs/mnt/gpfs01/star/pwg/dstewart/outroot/is2019/TreeRoots/"/>
+    <!-- <output fromScratch="*.log"  toURL="file:/gpfs/mnt/gpfs01/star/pwg/dstewart/outroot/is2019/TreeRoots/"/> -->
     <output fromScratch="*.root" toURL="file:/gpfs/mnt/gpfs01/star/pwg/dstewart/outroot/is2019/TreeRoots/"/>
 	<input URL="catalog:star.bnl.gov?events!=0,production=P18ih,filetype~picoDst,collision=pAu200,sname2=st_ssdmb||st_ssdmb_adc,year=2015,available=1,storage!=hpss,sanity=1" nFiles="all" preferStorage="local"/>
 
