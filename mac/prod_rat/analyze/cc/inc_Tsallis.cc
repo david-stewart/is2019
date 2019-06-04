@@ -12,10 +12,19 @@
 #include <TCanvas.h>
 
 // This is a local root library with some simple functions to fill TGraphErrors from TNtuples
-TGraphErrors *tup_to_TGE(TNtuple* tup) {
+/* TGraphErrors *tup_to_TGE(TNtuple* tup) { */
+/*     int n = tup->Draw("pt:dN:err","","goff"); */
+/*     return new TGraphErrors(n, tup->GetV1(), tup->GetV2(),0,tup->GetV3()); */
+/* }; */
+TGraphErrors *tup_to_TGE(TNtuple* tup, int color = kBlack, int m_style = kOpenCircle) {
     int n = tup->Draw("pt:dN:err","","goff");
-    return new TGraphErrors(n, tup->GetV1(), tup->GetV2(),0,tup->GetV3());
+    TGraphErrors *rval = new TGraphErrors(n, tup->GetV1(), tup->GetV2(),0,tup->GetV3());
+    rval->SetMarkerStyle(m_style);
+    rval->SetMarkerColor(color);
+    rval->SetLineColor(color);
+    return rval;
 };
+
 
 
 enum EnumFitFn    { Horvat5p5, LevySTAR, Tsallis };
@@ -31,6 +40,68 @@ double get_p_mass ( EnumParticle particle ) {
     }
 };
 
+TGraphErrors *tup_to_mT_TGE(TNtuple* tup, 
+        EnumParticle particle, int color = kFullCircle, int m_style = kBlack,
+        double factor=1.) {
+
+    int n = tup->GetEntries();
+    double *x = tup->GetV1();
+    double *y = tup->GetV2();
+    double *y_err = tup->GetV3();
+
+    double m0 { get_p_mass(particle) };
+
+    // scale x accordingly
+    for (int i{0}; i<n; ++i) {
+        //pT->mT
+        double pT {x[i]};
+        double mT {TMath::Sqrt(m0*m0+pT*pT)};
+        x[i] = mT;
+        //1/pT -> 1/mT
+        double scale { pT/mT * factor };
+        y[i] *= scale;
+        y_err[i] *= scale;
+    }
+    TGraphErrors* rval = new TGraphErrors(n, x, y,0,y_err);
+    rval->SetMarkerStyle(m_style);
+    rval->SetMarkerColor(color);
+    rval->SetLineColor(color);
+    return rval;
+};
+
+TGraphErrors *tup_pi_to_K_mT_TGE(TNtuple* tup, 
+        int color = kFullCircle, int m_style = kBlack,
+        double factor=2.) {
+
+    int n = tup->GetEntries();
+    double *x = tup->GetV1();
+    double *y = tup->GetV2();
+    double *y_err = tup->GetV3();
+
+    double m_pi { get_p_mass(t_pi) };
+    double m_K  { get_p_mass(t_K) };
+
+    // pi: pT to mT
+    // scale x accordingly
+    for (int i{0}; i<n; ++i) {
+        // combine pT -> mT_pion(Kaon) and mT_pion/Kaon back to pT
+        double pT = TMath::Sqrt( x[i]*x[i] + m_pi*m_pi - m_K*m_K );
+        double scale { pT/x[i] / factor };
+        x[i] = pT;
+        y[i] *= scale;
+        y_err[i] *= scale;
+    }
+
+    TGraphErrors* rval = new TGraphErrors(n, x, y,0,y_err);
+    rval->SetMarkerStyle(m_style);
+    rval->SetMarkerColor(color);
+    rval->SetLineColor(color);
+    return rval;
+};
+
+
+
+// make a m_T scaling of a given data input
 TF1* TsallisFn(double A, double T, double n, EnumParticle particle=t_pi, const char* fit_name="name", 
         int color = kBlack, int linestyle=1, double x_min=0., double x_max=15.) {
     double m0 { get_p_mass(particle) };

@@ -12,8 +12,15 @@ root -l StarPhenix_piKp_comp.root<<EOF
     auto pi_st = ctup(pi_star,   kOpenStar, kBlue, 3);
     auto pin_st = ctup(pin_star, kOpenStar, kRed, 3);
 
-    auto K_ph = ctup(K_phenix,   kOpenSquare, kCyan+2,3);
+    auto K_ph  = ctup(K_phenix,   kOpenSquare, kCyan+2,3);
     auto Kn_ph = ctup(Kn_phenix, kOpenSquare, kCyan-2,3);
+
+    auto Kshort = ctup(Kshort_star,  kFullFourTrianglesX, kBlack, 7);
+    auto pi_pp = ctup(star_pi_pp,   kOpenCrossX, kGreen+3, 7);
+    auto pin_pp = ctup(star_pin_pp,  kFullCrossX, kGreen+3, 7);
+    auto p_pp = ctup(star_p_pp,    kOpenTriangleDown, kMagenta+1, 7);
+    auto pbar_pp = ctup(star_pbar_pp, kFullTriangleDown, kMagenta+1, 7);
+
 
     TCanvas *c = new TCanvas("c");
     c->SetLogy();
@@ -38,6 +45,12 @@ root -l StarPhenix_piKp_comp.root<<EOF
 
     K_ph->Draw("PE same");
     Kn_ph->Draw("PE same");
+
+    Kshort->Draw("PE same");
+    pi_pp->Draw("PE same");
+    pin_pp->Draw("PE same");
+    p_pp->Draw("PE same");
+    pbar_pp->Draw("PE same");
     
     TLegend* leg = new TLegend();
     leg->AddEntry(p_st,"p STAR");
@@ -50,6 +63,12 @@ root -l StarPhenix_piKp_comp.root<<EOF
     leg->AddEntry(pin_ph,"#pi^{-} Phenix");
     leg->AddEntry(K_ph,"#Kappa Phenix");
     leg->AddEntry(Kn_ph,"#Kappa^{-} Phenix");
+
+    leg->AddEntry(Kshort,"#Kappa_{short} pp STAR");
+    leg->AddEntry(pi_pp,"#pi^{+} pp STAR");
+    leg->AddEntry(pin_pp,"#pi^{-} pp STAR");
+    leg->AddEntry(p_pp,"p pp STAR");
+    leg->AddEntry(pbar_pp,"#bar{p} pp STAR");
     leg->Draw("same");
 
     TCanvas *c0 = new TCanvas("c0");

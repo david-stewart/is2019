@@ -2,7 +2,7 @@ root -l <<EOF
     .L ../cc/inc_Tsallis.cc+
     int nbins = 150;
 
-    TFile *fin  = new TFile("fn_weight.root", "update");
+    TFile *fin  = new TFile("fn_weight_$1.root", "update");
     const char* name[6]{"pi","pin","p","pbar","K","Kn"};
     const char* fmt_name[6]{"#pi","#pi^{-}","p","#bar{p}","#Kappa","#Kappa^{-}"};
 

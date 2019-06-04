@@ -19,34 +19,33 @@ Steps to run here (/Users/djs232/is2019/mac/prod_rat/analyze):
         /pi.root
         /pin.root
 
-*. (independent step)
-    Make track resolutions.
-    ./tr_resolution
-    note: prefer MT to TM matrices (MT are what are used to unfold) 
-    >> ls tr_resultion
-
 2. Make the data in ../data/
 
-    phenix_pikp_data/
-       to_tuples.cc 
-       pip_STAR.root
+    ./phenix_pikp_data/
+       ./to_tuples.cc 
+       ./pip_STAR.root
 
-    star_pip_data/
-        phenix_to_tuples.cc
-        piKp_phenix.root
+    ./star_pip_data/
+        ./phenix_to_tuples.cc
+        ./piKp_phenix.root
 
-*. (independent of the rest)
-   Make plots with StarPhenix_piKp_comp
-   >> ./StarPhenix_piKp_comp.sh
-   >> ./plot_comp.cc 
+    ./star_Kshort/
+        ./Kshort.root
+        ./to_tup.cc
+
+    Collect that data into a single root file:
+    ./gather.csh
+      -> piKp_dAu_star_phenix.root
+      -> piKp_pp_star.root
 
 3. Make ./fn_weight/fn_weight.root with:
-    >> fn_weight.sh
+    >> fn_weight.csh
       -> uses fn_weight.cc
-      -> make fn_weight.root
+      -> make fn_weight_pp.root
+      -> make fn_weight_dAu.root
     
 
-3. Make the weighted matrices under ./weight_TM
+4. Make the weighted matrices under ./weight_TM
 
     (a) weight_TM.sh
     -> driver for weight_TM.cc
@@ -54,6 +53,31 @@ Steps to run here (/Users/djs232/is2019/mac/prod_rat/analyze):
 
     * can also use plot_weight_TM.cc
     To make a 3x2 matrix Measured x Truth matrices
+
+    Results to be used are:
+    ./piKp_weighted_dAu.root (matrices for h+, so subgroups)
+    ./pip_weighted_dAu.root  (ditto for above, but without Kaons)
+
+    ./piKp_weighted_pp.root (ditto for above, but for pp with Kshort's)
+    ./pip_weighted_pp.root  
+
+    ./TM_weighted_[dAu/pp].root (ditto fo piKp above, but with A and B subgroups)
+
+*. (independent step)
+    Make track resolutions.
+    ./tr_resolution.sh
+    <- uses ./make_res.cc
+
+    note: prefer MT to TM matrices (MT are what are used to unfold) 
+    >> ls tr_resultion
+
+
+*. (independent of the rest)
+   Make plots with StarPhenix_piKp_comp
+   >> ./StarPhenix_piKp_comp/StarPhenix_piKp_comp.sh
+   >> ./StarPhenix_piKp_comp/plot_comp.cc 
+   >> ./StarPhenix_piKp_comp/plot_comp_v2.cc 
+
 
 4. -- to do -- the actual unfolding
 

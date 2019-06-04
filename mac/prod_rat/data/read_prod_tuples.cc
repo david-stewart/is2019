@@ -34,6 +34,23 @@ root -l<<EOF
         f.close();
     };
 
+    /* void fill_Kshort (const char* f_name, */ 
+    /*                  const char* tup_name, */
+    /*                 const char* tup_string) { */
+    /*     TNtuple *tup = new TNtuple(tup_name, tup_string, "pt:dN:err"); */
+    /*     ifstream f; */
+    /*     f.open(f_name); */
+    /*     string line; */
+    /*     while (getline(f, line)){ */
+    /*         istringstream iss { line }; */
+    /*         double pt, val, err0, err1; */
+    /*         iss >> pt >> val >> err0 >> err1; */
+    /*         double err { TMath::Sqrt(err0*err0+err1*err1) }; */
+    /*         tup->Fill(pt, val, err); */
+    /*     } */
+    /*     f.close(); */
+    /* }; */
+
 
     TFile *file = new TFile("piKp_abundances.root","RECREATE");
     fill_tup2("fig2_data/pbar.txt"   ,"pbar_f2"   ,"pbar abundances from fig. 2 with RSS of err");

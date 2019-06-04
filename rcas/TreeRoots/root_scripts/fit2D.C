@@ -34,9 +34,10 @@ void fit2D(TProfile2D* p2D, double vz_range, const char* parameter_out) {
    f2->SetParameters(f2params);
    p2D->SetStats(111111111);
 
-   gStyle->SetOptFit(1011);
+   gStyle->SetOptFit(1111);
    f2->SetParameters(f2params);
-   p2D->Fit("f2","N");
+   p2D->Fit("f2");
+   p2D->Draw("colz");
 
    ofstream f_out;
    f_out.open(parameter_out);
@@ -47,6 +48,4 @@ void fit2D(TProfile2D* p2D, double vz_range, const char* parameter_out) {
        ++i;
    }
    f_out.close();
-
-   p2D->Draw("colz");
 }
